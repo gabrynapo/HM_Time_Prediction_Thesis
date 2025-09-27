@@ -1,0 +1,465 @@
+\documentclass[12pt,a4paper,twoside]{report}
+
+% Lingua e codifica
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}   % usa utf8 se il file è salvato in UTF-8
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{enumitem}
+
+% Margini e layout
+\usepackage[a4paper,margin=3cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% Intestazioni/piedi pagina
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % pulisci
+%\fancyhead[LE,RO]{\bfseries\thepage}
+\fancyfoot[C]{\bfseries\thepage}
+\fancyhead[LO]{\bfseries\rightmark}
+\fancyhead[RE]{\bfseries\leftmark}
+
+% Varie utili
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsthm,latexsym}
+\usepackage{indentfirst}
+
+% (opzionale) Link cliccabili - mettilo in fondo ai pacchetti
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+
+% --- FRONTESPIZIO SEMPLICE ---
+\begin{titlepage}
+\centering
+{\Large\textsc{Alma Mater Studiorum $\cdot$ Università di Bologna}}\\[1ex]
+\rule{15.8cm}{0.1mm}\\[0.4cm]
+{\small\bfseries SCUOLA DI SCIENZE\\
+Corso di Laurea in Informatica per il management}\\[2cm]
+{\LARGE\bfseries Dall’analisi esplorativa alla previsione: studio dei tempi di mezza maratona basato su dati raccolti tramite questionario}\\[3cm]
+\begin{minipage}[t]{0.47\textwidth}
+\raggedright
+\large\bfseries Relatore:\\
+Chiar.ma Prof.ssa\\
+ Elena Loli Piccolomini 
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}
+\raggedleft
+\large\bfseries Presentata da:\\
+Gabriele Napoletano
+\end{minipage}\\[2cm]
+{\large\bfseries Sessione III\\
+Anno Accademico 2024-2025}
+\end{titlepage}
+
+% --- DEDICA (facoltativa) ---
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{flushright}
+\emph{Ieri è storia, domani è un mistero, ma oggi è un dono, per questo si chiama presente\ldots}
+\end{flushright}
+\vspace*{\fill}
+\clearpage
+
+% --- INDICI ---
+\pagenumbering{arabic}
+\tableofcontents
+\clearpage
+
+% --- INTRODUZIONE ---
+\chapter*{Introduzione}
+\addcontentsline{toc}{chapter}{Introduzione}
+La presente tesi si concentra sull'analisi e sulla previsione delle prestazioni degli atleti nella mezza maratona, con particolare attenzione ai fattori che influenzano il risultato finale.   \\
+
+L’interesse per questo tema nasce da una passione personale non solo per il mondo della corsa, ma anche per l’analisi dei dati e per le possibilità che essi offrono nel supportare processi decisionali.\\
+In un contesto sportivo in costante crescita come quello del running, è infatti sempre più diffuso l’impiego di strumenti tecnologici dedicati al monitoraggio dello stato di forma e dei progressi degli atleti. Tali strumenti si basano su modelli di machine learning addestrati su grandi quantità di dati raccolti dalle aziende attraverso l’utilizzo dei loro prodotti da parte degli sportivi.\\
+È proprio a partire da questa realtà che prende forma l’idea per questa tesi.\\ 
+
+
+Questo lavoro segue l'iter classico di un'analisi dati, partendo dalla pulizia e preparazione del dataset fino alla fase di previsione.\\
+Gli obiettivi principali sono sia la scoperta di caratteristiche salienti del dataset tramite analisi esplorativa, sia la ricerca di modelli predittivi il più accurati possibile.\\
+
+Il dataset utilizzato è il risultato di un questionario elaborato appositamente per questo studio, che ha raccolto un totale di 167 risposte.\\
+
+La tesi è organizzata in 3 capitoli: il primo introduce il contesto e specifica gli obiettivi della ricerca, il secondo descrive il questionario e l'analisi effettuata sui dati, mentre il terzo presenta i modelli utilizzati e i risultati delle previsioni.\\
+Infine, le conclusioni con alcune considerazioni sul lavoro svolto.
+
+
+
+\clearpage
+
+% --- CORPO ---
+
+% --- PRIMO CAPITOLO ---
+\chapter{Contesto e obiettivi della ricerca}
+
+\section{Contesto}
+Il panorama della corsa podistica ha registrato negli ultimi anni una crescita straordinaria, con altissimi incrementi di partecipazione. La mezza maratona si è consolidata come la distanza più accessibile e praticata, rappresentando il punto di ingresso ideale per corridori di ogni livello. \cite{K1} \\
+Parallelamente, il mondo dello sport ha assistito a una vera e propria rivoluzione tecnologica caratterizzata dalla diffusione massiva di dispositivi wearable e strumenti di monitoraggio delle prestazioni.\\
+L’uso di tecnologie indossabili per l’auto-monitoraggio è recentemente emerso come una nuova tendenza volta a tracciare lo stile di vita e ottimizzare il benessere personale in termini di salute e forma fisica. \cite{K2}\\
+
+Il settore del fitness tracking e dell’analisi delle prestazioni nella corsa è in continua espansione, grazie alla disponibilità di grandi quantità di dati strutturati e non strutturati derivanti dagli allenamenti degli atleti. L’aumento del volume di questi dati ha favorito lo sviluppo e l’applicazione di tecniche di intelligenza artificiale e machine learning, impiegate per analizzare le prestazioni e stimare in modo realistico i tempi gara.\\
+Nel contesto della corsa, gli algoritmi di machine learning vengono utilizzati per addestrare modelli predittivi basati su dati reali di allenamento e attività, consentendo di prevedere le prestazioni su diverse distanze.\\
+L’impiego di questi strumenti permette agli atleti e agli allenatori di monitorare i progressi, adattare i carichi di allenamento e ottenere stime più precise dei tempi gara, rendendo l’analisi dei dati uno strumento sempre più centrale nella preparazione atletica. \cite{K3} \\
+
+In questo panorama, emergono approcci metodologici differenti per la predizione delle prestazioni.\\
+
+Garmin, leader nel settore dei dispositivi GPS per il fitness, basa il suo sistema di Race Predictor sul VO$_2$max stimato degli utenti, utilizzando questo parametro fisiologico come baseline per generare previsioni dei tempi di gara su diverse distanze.\\
+Il sistema integra i dati storici di allenamento con le misurazioni della capacità aerobica per fornire stime personalizzate. \cite{Garmin2025} \\
+
+Strava, piattaforma social per atleti con oltre 100 milioni di utenti attivi, ha introdotto \textit{Performance Predictions}, un modello di machine learning che utilizza oltre 100 attributi dell'atleta e si basa esclusivamente su dati di attività reali, senza ricorrere ad input teorici come il VO$_{2}$max stimato.\\
+Il sistema confronta le prestazioni con quelle di atleti dal profilo di allenamento simile, così da generare stime il più realistiche possibile fondate su risultati effettivamente raggiunti da soggetti comparabili.
+
+Un elemento distintivo dell'approccio di Strava è il calcolo indipendente delle previsioni per ciascuna distanza (5 km, 10 km, mezza maratona, maratona), che consente di riflettere le specificità dell'allenamento: volumi settimanali e lavori lunghi tendono a migliorare le stime sulle distanze lunghe più che su quelle corte, mentre cicli focalizzati su velocità e potenza influenzano maggiormente i 5 km e i 10 km.\\
+Le previsioni si aggiornano automaticamente dopo ogni corsa e si adattano anche durante i periodi di recupero, a condizione di disporre di uno storico minimo recente per garantire la qualità della previsione stessa. \cite{Strava2025} \\
+
+Nonostante questi progressi, la precisione rimane eterogenea e dipendente dal profilo individuale e dai dati disponibili, con discussioni pubbliche che evidenziano discrepanze e variabilità nelle stime soprattutto per i modelli basati su parametri fisiologici stimati.\\
+Queste criticità motivano lo sviluppo di modelli più personalizzati e robusti ai bias di dataset e ai cambiamenti di carico, valorizzando l'integrazione di segnali multi-sorgente e metodologie orientate alla generalizzazione su popolazioni eterogenee.
+
+
+\section{Obiettivi della ricerca}
+
+La ricerca si propone di costruire un processo completo di analisi dei dati finalizzato a comprendere e prevedere le prestazioni nella mezza maratona, a partire da un dataset originale ottenuto tramite un questionario.\\
+
+In primo luogo, l'obiettivo è garantire l'affidabilità dei dati ricavati attraverso una fase rigorosa di pulizia e preparazione dei dati, che includa il trattamento sistematico di valori mancanti, outlier e la standardizzazione delle variabili, tenendo traccia di tutti i passaggi effettuati per arrivare al dataset finale.\\
+Successivamente, si intende condurre un'analisi statistica esplorativa approfondita per descrivere la distribuzione delle principali caratteristiche degli atleti e dei loro allenamenti, mettere in evidenza pattern e relazioni tra variabili e individuare i fattori maggiormente associati al tempo finale sulla distanza della mezza maratona.\\
+Tale fase di visualizzazione ha lo scopo di informare in modo \textit{data-driven} le scelte di modellazione del dataset, la selezione delle variabili e la definizione di adeguate strategie di validazione.\\
+
+Sulla base delle evidenze emerse dall'esplorazione, l'obiettivo successivo è sviluppare modelli predittivi in grado di stimare con accuratezza i tempi di gara, privilegiando approcci che massimizzino sia l'accuratezza sia la stabilità delle stime.\\
+
+In sintesi, la tesi mira a coniugare qualità del dato, chiarezza interpretativa e prestazioni predittive, offrendo allo stesso tempo indicazioni pratiche sui fattori che più incidono sul risultato in mezza maratona e su come modelli basati su dati reali possano supportare stime affidabili e utili per la preparazione atletica.
+
+\chapter{Raccolta e pulizia dei dati}
+
+\section{Struttura del questionario}
+
+Il questionario è stato sviluppato appositamente nell'ambito di questo lavoro di ricerca, poichè non sono state individuate risorse o strumenti già disponibili online che raccogliessero in modo organico e mirato i dati utili all'analisi.\\
+L'obiettivo principale era indagare i fattori anagrafici, fisiologici e legati all'allenamento che possono influenzare la performance nella mezza maratona.\\
+Per questo motivo, la struttura è stata concepita per accompagnare il rispondente in modo progressivo, partendo dalle informazioni generali (caratteristiche personali) fino ad arrivare a dettagli più specifici (parametri di allenamento e risultati cronometrici), mantenendo al tempo stesso una compilazione chiara, rapida e intuitiva.
+
+
+\subsection{Criteri di definizione delle domande}
+
+La scelta delle domande è stata guidata dalle principali variabili collegate alla corsa e che, soprattutto, potessero influire sulla prestazione finale.\\
+Fattori come il VO$_2$max, la frequenza cardiaca, la cadenza e il volume di allenamento settimanale sono, infatti, determinanti per il rendimento in gara.\\
+
+Per garantire coerenza e confrontabilità dei dati, le domande sugli allenamenti facevano riferimento alle quattro settimane precedenti la mezza maratona, periodo ritenuto più rappresentativo della condizione atletica al momento della gara.
+Questo perchè, nei periodi più prossimi alle gare, i programmi di allenamento prevedono in genere una riduzione significativa del volume (\textit{tapering}), e quindi non risulterebbe una variabile rappresentativa della preparazione complessiva.\\
+
+Le domande sono state organizzate secondo una sequenza logica che procede dal generale al particolare: innanzitutto i dati anagrafici e antropometrici (età, sesso, peso, altezza); poi le abitudini di allenamento (anni di pratica, tipologia e frequenza degli allenamenti, chilometraggio medio settimanale, ore di sonno) ed infine i parametri fisiologici e i risultati prestazionali (frequenza cardiaca, cadenza, tempi di gara).\\
+
+Per garantire un'analisi dei dati efficace, sono state privilegiate domande a risposta chiusa o numerica, limitando le risposte aperte ai soli casi in cui fosse indispensabile, come l'inserimento dei tempi.\\
+Un ulteriore criterio adottato nel questionario riguarda l'imposizione di limiti minimi (es. \textit{"Meno di 10 km"}) e massimi (es. \textit{"Più di 10 km"}) alle risposte nelle domande numeriche relative agli anni di allenamento e ai chilometri settimanali.\\
+Questa scelta è dovuta al fatto che in questo modo si evitano risposte palesemente errate o fuori scala.\\
+Questa struttura non solo consente un'elaborazione statistica valida, ma riduce anche il rischio di bias: la collocazione delle domande prestazionali alla fine, infatti, evita che esse influenzino le risposte relative all'allenamento o allo stile di vita.\\
+
+Nel complesso, le variabili richieste sono le seguenti:
+\begin{enumerate}
+    \item Età: indica gli anni compiuti dell’atleta; è un fattore che può influire sulla capacità aerobica, sul recupero e sull’efficienza prestativa.
+
+    \item Sesso: permette di distinguere tra maschi e femmine, dato che esistono differenze fisiologiche (ad esempio in termini di VO$_2$max e composizione corporea) che possono incidere sulle prestazioni.
+
+    \item Peso: espresso in chilogrammi, influisce sul costo energetico della corsa e sul rapporto peso/potenza, particolarmente rilevante nelle discipline di resistenza.
+
+    \item Altezza: misura antropometrica che, insieme al peso, può influire sulla biomeccanica della corsa.
+
+    \item Anni di pratica: rappresentano l’esperienza complessiva di corsa continuativa; più anni di allenamento sono associati a maggior adattamento aerobico e muscolare.
+
+    \item Numero di allenamenti settimanali: indica la frequenza complessiva delle sedute; una maggiore regolarità è spesso correlata a migliori prestazioni.
+
+    \item Numero di allenamenti settimanali di fondo lento/medio: quantifica le sedute a bassa o media intensità, fondamentali per sviluppare la base aerobica.
+
+    \item Numero di allenamenti settimanali di ripetute/fartlek: misura l’impegno in sedute di qualità ad alta intensità, importanti per migliorare velocità, soglia anaerobica e capacità di gara.
+
+    \item Numero di allenamenti settimanali in palestra: rileva il tempo dedicato a forza e mobilità, elementi che possono ridurre il rischio di infortuni e migliorare l’efficienza di corsa.
+
+    \item Volume settimanale: chilometri totali corsi in una settimana; è uno dei principali indicatori del carico di allenamento e della capacità di resistenza.
+
+    \item Ore di sonno: la media delle ore dormite per notte, parametro strettamente connesso al recupero fisiologico e alla qualità della prestazione.
+
+    \item VO$_{2}$max: misura stimata o rilevata della massima capacità aerobica; rappresenta uno dei predittori più forti della performance di endurance.
+        
+    \item Frequenza cardiaca a riposo: indice dello stato di forma e del livello di recupero; valori più bassi sono generalmente associati a un migliore adattamento cardiovascolare.
+
+    \item Frequenza cardiaca massima: parametro utile per calibrare l’intensità degli allenamenti e per valutare le capacità fisiologiche individuali.
+
+    \item Cadenza: numero medio di passi al minuto; riflette l’economia di corsa e può incidere sull’efficienza complessiva.
+
+    \item Tempo finale della mezza maratona: prestazione effettiva misurata tramite chip time; costituisce la variabile target principale per la previsione.
+
+    \item Tempo sui primi 10 km della mezza maratona: split intermedio che consente di analizzare il pacing e la distribuzione dello sforzo durante la gara.
+\end{enumerate}
+
+\clearpage
+
+\subsection{Descrizione del campione raccolto}
+
+Il campione finale raccolto ha ottenuto 167 risposte, tutte da corridori amatori che hanno disputato almeno una mezza maratona negli ultimi dodici mesi.\\
+
+Per ottenere il maggior numero possibile di risposte, il questionario è stato diffuso attraverso diversi canali: durante le gare podistiche agli atleti partecipanti e, parallelamente, tramite social media, inviando il link del modulo agli allenatori del settore e chiedendo di divulgarlo tra i propri atleti.\\
+
+Si vedrà successivamente nella fase di esplorazione e visualizzazione, come la condivisione del questionario abbia influito sul campione raccolto.\\ 
+
+
+Questa strategia ha permesso di raggiungere un pubblico mirato e pertinente, aumentando la rappresentatività e la qualità delle informazioni raccolte.\\
+
+
+%\section{Tabelle}
+%La tabella \ref{tab:uno}:
+%\begin{table}[h]
+%\centering\
+%\begin{tabular}{r|c|c}
+%\hline\hline
+%$(1,1)$ & $(1,2)$ & $(1,3)$\\ \hline
+%$(2,1)$ & $(2,2)$ & $(2,3)$\\ \hline
+%$(3,1)$ & $(3,2)$ & $(3,3)$\\
+%\hline\hline
+%\end{tabular}
+%\caption[legenda elenco tabelle]{legenda tabella}\label{tab:uno}
+%\end{table}
+
+%\subsection{Listati}
+
+% --- SECONDO CAPITOLO ---
+\section{Pulizia dei dati}
+
+\subsection{Pulizia e preparazione dei dati}
+La pulizia e la preparazione del dato (\textit{"data cleaning"} e \textit{"data preparation"}) rappresentano fasi fondamentali in qualsiasi studio che si basi su analisi statistiche o sull'addestramento di modelli predittivi.\\
+I dati raccolti, soprattutto quando provengono da fonti eterogenee o da questionari, possono presentare errori, valori mancanti o formati incoerenti.\\
+Dunque, prima di procedere con l'applicazione delle tecniche di regressione, classificazione o modelli di previsione delle performance, è necessario trasformare i dati grezzi in una forma coerente, affidabile e adatta all'analisi.\\
+
+Questo insieme di operazioni ha come unico scopo quello di arrivare a ottenere un dataset "pulito" che permetta di ottenere risultati attendibili e riduca al minimo i rischi di distorsioni o bias nelle previsioni.\\
+
+In particolare, in questo studio, permettono di gestire correttamente le variabili richieste nelle domande, che spesso possono avere valori mancanti o formati diversi.\\
+Per esempio, molti partecipanti non disponevano di una misurazione accurata di alcuni parametri. Di conseguenza hanno dovuto inviare risposte prive di informazioni (e.g. "Non lo so").\\
+Inoltre, migliorano la qualità delle previsioni sui tempi di gara, poichè i modelli di machine learning sono molto sensibili alla qualità del dataset di partenza.\\
+
+Un ulteriore aspetto da considerare è il numero complessivamente ridotto di risposte ricevute, che ha reso ancora più delicata la fase di pulizia e preparazione dei dati.\\
+
+
+\subsection{Pulizia preliminare}
+Una volta finita la fase di raccolta dati, la tabella finale contenente le risposte del questionario necessitava di una revisione.\\
+
+Le risposte al questionario sono state inizialmente controllate visualmente su un foglio di calcolo. 
+Le tuple con valori incomprensibili, incoerenti o con un’elevata presenza di risposte “non disponibili” sono state rimosse, riducendo il numero totale di osservazioni a 150.\\
+
+\subsection{Gestione dei valori mancanti e outlier}
+In questa fase, i dati sono stati esportati in un file csv e caricati in uno script Python per una gestione più accurata di valori mancanti e outlier.\\
+
+È stata innanzitutto rimossa la colonna "Timestamp", che riportava la data e l'ora di compilazione del questionario, in quanto non rilevante ai fini dell’analisi.\\
+
+Successivamente, sono state individuate le colonne con valori nulli.\\
+In questo caso, erano due features: VO$_2$max e cadence (\textit{cadenza}).\\
+L'eliminazione della colonna relativa al VO$_2$max ha inciso negativamente sui risultati finali dei modelli, perchè essendo molto correlata al tempo finale, avrebbe sicuramente aiutato a ottenere errori minori.\\
+
+Gli eventuali valori mancanti sono stati verificati utilizzando il seguente comando:
+\begin{verbatim}
+    df.isnull().values.any()
+\end{verbatim}
+Questo comando restituisce un valore booleano: \texttt{True} se nel dataset sono presenti valori mancanti (\texttt{NaN}), \texttt{False} altrimenti.\\
+In questo modo è stato possibile confermare che tutte le righe rimanenti fossero complete.\\
+
+Invece, per quanto riguarda gli outlier, sono state eliminate le tuple con tempi finali uguali o inferiori a 140 minuti.\\
+Questo ha permesso di ottenere un insieme di tempi con distribuzione normale.\\
+
+Al termine di questa fase, il dataset risultante contava 145 righe pronte per la successiva analisi.
+
+\subsection{Conversione e normalizzazione delle variabili}
+
+Per permettere analisi quantitative, le variabili testuali sono state convertite in formato numerico.\\
+
+La variabile relativa al sesso è stata codificata in formato numerico, attribuendo il valore 0 a "Femmina" e il valore 1 a "Maschio".\\
+La variabile relativa agli anni di allenamento, inizialmente espressa in forma testuale, è stata trasformata in formato numerico: le risposte "Meno di 1" sono state ricodificate come 0.5 (mezzo anno di esperienza), mentre "10 in su" è stata ricodificata come 11. Successivamente, l’intera colonna è stata convertita in valori di tipo float.\\
+
+Analogamente a quanto fatto per gli anni di allenamento, la variabile "avg\_km\_week" è stata trasformata in formato numerico. Le risposte "Più di 80" sono state sostituite con 85 e l’intera colonna è stata convertita in tipo intero.\\
+
+Per le variabili relative ai diversi tipi di allenamento settimanale (z2\_train\_week, fartelk\_train\_week e power\_train\_week), i valori mancanti sono stati sostituiti con 0. Successivamente, le colonne sono state convertite in valori interi.\\
+
+Inoltre, sono state aggiunte colonne aggiuntive contenenti i tempi convertiti sia in secondi che in minuti, in modo da agevolare le successive analisi e i confronti tra le diverse unità di misura.\\
+
+\chapter{Esplorazione e visualizzazione}
+Dopo la fase di pulizia e normalizzazione del dataset, è stato necessario procedere con un’analisi esplorativa dei dati (Exploratory Data Analysis, EDA). \\
+Questa fase rappresenta un passaggio fondamentale, in quanto consente di ottenere una comprensione approfondita delle caratteristiche del campione a disposizione  e di valutare la qualità e la coerenza delle informazioni raccolte.\\
+
+Attraverso tecniche di visualizzazione e calcolo di statistiche descrittive è stato possibile esaminare la distribuzione delle variabili principali, individuare eventuali anomalie o valori estremi, nonché identificare relazioni preliminari tra i diversi fattori.\\
+
+L’analisi esplorativa non si limita a una semplice descrizione dei dati, ma fornisce spunti interpretativi utili a orientare le fasi successive del lavoro,  come la selezione delle variabili più rilevanti e la definizione di modelli predittivi. \\
+In particolare, l’attenzione è stata posta sia sulle caratteristiche demografiche e prestazionali dei partecipanti,  sia sulle possibili correlazioni tra parametri fisiologici, abitudini di allenamento e risultati ottenuti in gara. \\
+
+Infine, attraverso un confronto tra sottogruppi di atleti (più veloci e più lenti), è stato possibile mettere in evidenza pattern distintivi e differenze significative, che offrono indicazioni preziose per comprendere i fattori che incidono maggiormente sulla performance sportiva.\\
+
+
+\section{Caratteristiche generali dei partecipanti}
+In questa sezione vengono presentate le principali caratteristiche del campione analizzato, con particolare attenzione agli aspetti demografici e prestazionali. \\
+L'obiettivo è fornire una panoramica chiara e dettagliata dei partecipanti, in termini di età, genere e performance sportive, al fine di contestualizzare le analisi successive. \\
+
+Attraverso l'esame delle distribuzioni delle variabili e l'identificazione di eventuali pattern o valori anomali, è possibile comprendere meglio la composizione del campione e le sue implicazioni sui risultati ottenuti. 
+In particolare, verranno illustrati la distribuzione di genere, l'età media e la variabilità dei tempi di gara, fornendo così un quadro iniziale completo dei partecipanti allo studio.\\
+
+\subsection{Distribuzione dell'età e genere}
+
+La distribuzione dell’età dei partecipanti è stata analizzata per valutare la composizione demografica del campione. \\
+L’età media risulta pari a 41,6 anni e una mediana di 42 anni, con un'età minima di 18 anni e una massima di 71 anni.\\
+La deviazione standard è di 14,4 anni, il che indica una certa variabilità all'interno del campione.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{grafici/age.png}
+    \caption{Istogramma delle età.}
+\end{figure}
+
+Per quanto riguarda il genere, il campione è composto per la maggior parte da uomini (85,5\%), mentre le donne rappresentano il 14,5\% dei partecipanti, come illustrato nel grafico seguente.\\ Questa distribuzione indica una netta predominanza maschile nel campione, elemento da considerare nelle analisi successive.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{grafici/sex.png}
+    \caption{Percentuale di uomini e donne nel campione.}
+\end{figure}
+
+\subsection{Distribuzione dei tempi finali di gara}
+I tempi di gara dei partecipanti, espressi in secondi, mostrano una media di circa 6.030 s (1 h 40 min) e una mediana di 6.000 s, con un minimo di 3.960 s (1 h 6 min) e un massimo di 8.280 s (2 h 18 min). \\
+La deviazione standard, pari a 885 s (circa 15 min), indica una certa variabilità tra i tempi registrati.\\
+
+Dal grafico a istogramma (Figura 3.3) si osserva che la maggior parte dei partecipanti si concentra intorno alla mediana, mentre valori estremi verso il minimo e il massimo risultano meno frequenti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{grafici/time_distribution.png}
+    \caption{Distribuzione dei tempi in secondi.}
+\end{figure}
+
+\section{Relazioni tra variabili e performance finale}
+
+Per indagare i fattori maggiormente associati alla performance, è stata calcolata la matrice di correlazione tra le variabili considerate e il tempo finale di gara.\\
+Tale analisi fornisce una visione complessiva delle relazioni lineari, evidenziando quali caratteristiche presentano legami più stretti (positivi o negativi) con il risultato.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{grafici/mtx_corr.png}
+    \caption{Matrice di correlazione.}
+\end{figure}
+
+Successivamente, per approfondire alcuni aspetti specifici, sono state analizzate tre variabili di interesse:
+\begin{itemize}
+    \item \textbf{Allenamenti in Z2}: corsa a intensità bassa–media, circa il 60–75\% della frequenza cardiaca massima, mirata a costruire base aerobica ed efficienza metabolica nel tempo.
+    \item \textbf{Allenamenti di potenza}: sedute ad alta intensità o con esercizi esplosivi/di forza per sviluppare velocità.
+    \item \textbf{Ore di sonno medie}: numero medio di ore dormite per notte, indicatore del recupero fisiologico che supporta gli adattamenti e la prestazione.
+\end{itemize}
+
+Di queste sono stati tracciati degli scatterplot, in modo da visionare graficamente che tipo di correlazione avessero con il tempo finale espresso in minuti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/lmplot_z2_timemin.png}
+    \caption{Correlazione tra allenamenti in Z2 e tempo finale}
+\end{figure}
+
+Dal grafico emerge una correlazione negativa tra il numero di allenamenti in Z2 e il tempo finale: all’aumentare degli allenamenti di corsa in zona 2, i tempi di gara tendono a ridursi, indicando un’associazione con prestazioni migliori.\\
+Si nota una dispersione elevata, ma l'intervallo di confidenza si restringe, suggerendo un trend plausibile.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/lmplot_power_timemin.png}
+    \caption{Correlazione tra allenamenti di potenza e tempo finale}
+\end{figure}
+
+La relazione appare debolmente positiva, quindi più allenamenti settimanali dedicati alla potenza sono associati a tempi più alti.\\
+Questo può essere dovuto al fatto che gli allenamenti di potenza sono in genere svolti per aumentare le capacità di sostenere ritmi elevati su tratti brevi. \\
+Di conseguenza, preferire questa tipologia di allenamento, a discapito di altre, porta ad una peggiore performance sulla mezza maratona.\\
+Tuttavia, il grafico è molto dispersivo e presenta una banda di confidenza molto ampia, perciò l’effetto stimato è incerto e può risentire di pochi casi agli estremi.
+
+\clearpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/lmplot_sleephour_timemin.png}
+    \caption{Correlazione tra ore di sonno medie e tempo finale}
+\end{figure}
+
+Nel grafico la pendenza è quasi nulla, quindi l’aumento delle ore medie di sonno non si associa a un miglioramento sistematico dei tempi di gara nel campione considerato.\\
+La nuvola dei punti rimane ampia lungo tutto l’asse e la banda di confidenza non è stretta, segnalando che l’effetto medio stimato è debole.
+
+\section{Analisi comparative tra quartili}
+Infine, è stata effettuata un'analisi basata sui quartili del tempo finale, suddividendo l'intero dataset in due gruppi: 
+il primo quartile (Q1), che rappresenta il 25\% dei partecipanti con i tempi più rapidi, e l'ultimo quartile (Q4), che comprende il 25\% dei partecipanti con i tempi più lenti. \\
+
+Questa suddivisione consente di confrontare in modo diretto le caratteristiche dei partecipanti agli estremi della distribuzione dei tempi di gara.\\
+\clearpage
+Come primo passaggio, sono stati calcolati i valori medi dei tempi finali e dei chilometri settimanali dei due quartili per evidenziare le principali differenze.\\ 
+I risultati sono i seguenti:
+\begin{itemize}
+    \item Q1 presenta un tempo medio di gara pari a circa 82,2 minuti e una media di chilometri settimanali di circa 59,3 km.
+    \item Q4 presenta un tempo medio di gara pari a circa 119,9 minuti e una media di chilometri settimanali di circa 31,5 km.
+\end{itemize}
+
+Tra i due quartili si osserva una differenza significativa sia nei tempi di gara, sia nel volume di allenamento settimanale.\\
+Queste evidenze hanno portato a concentrare l’attenzione sulle diverse modalità di allenamento seguite dai due gruppi di atleti.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{grafici/count_all_quartili.png}
+    \caption{Numero di allenamenti settimanali nei due gruppi estremi (Q1 e Q4).}
+\end{figure}
+Si nota come gli atleti più veloci (Q1) tendano ad allenarsi con maggiore frequenza settimanale e con una gamma di variabilità più ampia rispetto a quelli più lenti (Q4), che hanno un volume di sedute decisamente tipico del gruppo.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{grafici/boxplot_all_sett_quartili.png}
+    \caption{Distribuzione degli allenamenti settimanali in zona 2 (Z2) nei due quartili estremi (Q1 e Q4).}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{grafici/boxplot_all_sett_power_quartili.png}
+    \caption{Distribuzione degli allenamenti settimanali di potenza nei due quartili estremi (Q1 e Q4).}
+\end{figure}
+
+Dall’analisi delle diverse tipologie di allenamento emergono dinamiche opposte rispetto al volume complessivo. \\
+
+Per quanto riguarda le sedute in zona 2, i due gruppi mostrano valori medi simili, sebbene gli atleti più veloci (Q1) presentino una variabilità maggiore, segno di approcci più diversificati. \\
+Al contrario, negli allenamenti di potenza si osserva un quadro differente: gli atleti del Q1 svolgono un numero contenuto e piuttosto uniforme di sedute, mentre nel Q4 compare una distribuzione più eterogenea e talvolta più frequente.\\
+
+Questo suggerisce che i corridori più performanti tendono a privilegiare una pianificazione mirata e stabile, mentre i meno performanti adottano strategie meno definite e più variabili.
+
+
+
+\chapter{Previsione e risultati}
+\section{Scelta dei modelli}
+\subsection{Modelli con penalizzazione}
+\section{Risultati e metriche delle regressioni}
+\section{Confronto tra modelli}
+
+\clearpage
+% --- CONCLUSIONI ---
+\chapter*{Conclusioni}
+\addcontentsline{toc}{chapter}{Conclusioni}
+
+
+Queste sono le conclusioni. Riferimento alla bibliografia \cite{K3,K4}.
+\clearpage
+
+% --- APPENDICI ---
+
+
+%\appendix
+%\chapter{Questionario}
+
+% --- BIBLIOGRAFIA ---
+\begin{thebibliography}{90}
+\addcontentsline{toc}{chapter}{Bibliografia}
+\bibitem{K1} Nikolaidis, Pantelis Theodoros, and Beat Knechtle. "Participation and performance characteristics in half-marathon run: a brief narrative review." Journal of muscle research and cell motility 44.2 (2023): 115-122.
+\bibitem{K2} Spil, Ton A. M., Björn Kijl, e Vincent Romijnders. "The adoption and diffusion of wearables." In \textit{International Working Conference on Transfer and Diffusion of IT}, pp. 31–47, Springer, 2019.
+\bibitem{K3} Horvat, Tomislav, and Josip Job. "The use of machine learning in sport outcome prediction: A review." Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery 10.5 (2020): e1380.
+
+\bibitem{Garmin2025} Garmin. "How Garmin Performance Predictions Work." Support Center, Garmin. Consultato il 18 settembre 2025. \url{https://support.garmin.com/en-US/?faq=HUB4yrzJkg1BbgmozWkBm7}
+\bibitem{Strava2025} Strava. "Performance Predictions." Support Center, Strava. Consultato il 18 settembre 2025. \url{https://support.strava.com/hc/en-us/articles/35272903405965-Performance-Predictions}
+
+\end{thebibliography}
+
+% --- RINGRAZIAMENTI (facoltativi) ---
+\chapter*{Ringraziamenti}
+\thispagestyle{empty}
+Qui possiamo ringraziare il mondo intero!
+
+\end{document}
