@@ -37,7 +37,9 @@
 \begin{titlepage}
 \centering
 {\Large\textsc{Alma Mater Studiorum $\cdot$ Università di Bologna}}\\[1ex]
-\rule{15.8cm}{0.1mm}\\[0.4cm]
+\rule[0.1cm]{15.8cm}{0.1mm}
+\rule[0.5cm]{15.8cm}{0.6mm}
+
 {\small\bfseries SCUOLA DI SCIENZE\\
 Corso di Laurea in Informatica per il management}\\[2cm]
 {\LARGE\bfseries Dall’analisi esplorativa alla previsione: studio dei tempi di mezza maratona basato su dati raccolti tramite questionario}\\[3cm]
@@ -60,7 +62,7 @@ Anno Accademico 2024-2025}
 \thispagestyle{empty}
 \vspace*{\fill}
 \begin{flushright}
-\emph{Ieri è storia, domani è un mistero, ma oggi è un dono, per questo si chiama presente\ldots}
+\emph{A Leonardo e Nicolò}
 \end{flushright}
 \vspace*{\fill}
 \clearpage
@@ -85,7 +87,7 @@ Gli obiettivi principali sono sia la scoperta di caratteristiche salienti del da
 
 Il dataset utilizzato è il risultato di un questionario elaborato appositamente per questo studio, che ha raccolto un totale di 167 risposte.\\
 
-La tesi è organizzata in 3 capitoli: il primo introduce il contesto e specifica gli obiettivi della ricerca, il secondo descrive il questionario e l'analisi effettuata sui dati, mentre il terzo presenta i modelli utilizzati e i risultati delle previsioni.\\
+La tesi è organizzata in quattro capitoli: il primo introduce il contesto e specifica gli obiettivi della ricerca, il secondo descrive il questionario e le operazioni di pulizia effettuate, il terzo riguarda l'analisi condotta sui dati, mentre l'ultimo presenta i modelli utilizzati e i risultati delle previsioni.\\
 Infine, le conclusioni con alcune considerazioni sul lavoro svolto.
 
 
@@ -225,9 +227,8 @@ Questa strategia ha permesso di raggiungere un pubblico mirato e pertinente, aum
 %\subsection{Listati}
 
 % --- SECONDO CAPITOLO ---
-\section{Pulizia dei dati}
+\section{Pulizia e preparazione dei dati}
 
-\subsection{Pulizia e preparazione dei dati}
 La pulizia e la preparazione del dato (\textit{"data cleaning"} e \textit{"data preparation"}) rappresentano fasi fondamentali in qualsiasi studio che si basi su analisi statistiche o sull'addestramento di modelli predittivi.\\
 I dati raccolti, soprattutto quando provengono da fonti eterogenee o da questionari, possono presentare errori, valori mancanti o formati incoerenti.\\
 Dunque, prima di procedere con l'applicazione delle tecniche di regressione, classificazione o modelli di previsione delle performance, è necessario trasformare i dati grezzi in una forma coerente, affidabile e adatta all'analisi.\\
@@ -277,7 +278,7 @@ La variabile relativa agli anni di allenamento, inizialmente espressa in forma t
 
 Analogamente a quanto fatto per gli anni di allenamento, la variabile "avg\_km\_week" è stata trasformata in formato numerico. Le risposte "Più di 80" sono state sostituite con 85 e l’intera colonna è stata convertita in tipo intero.\\
 
-Per le variabili relative ai diversi tipi di allenamento settimanale (z2\_train\_week, fartelk\_train\_week e power\_train\_week), i valori mancanti sono stati sostituiti con 0. Successivamente, le colonne sono state convertite in valori interi.\\
+Per le variabili relative ai diversi tipi di allenamento settimanale (z2\_train\_week, fartlek\_train\_week e power\_train\_week), i valori mancanti sono stati sostituiti con 0. Successivamente, le colonne sono state convertite in valori interi.\\
 
 Inoltre, sono state aggiunte colonne aggiuntive contenenti i tempi convertiti sia in secondi che in minuti, in modo da agevolare le successive analisi e i confronti tra le diverse unità di misura.\\
 
@@ -306,10 +307,11 @@ La distribuzione dell’età dei partecipanti è stata analizzata per valutare l
 L’età media risulta pari a 41,6 anni e una mediana di 42 anni, con un'età minima di 18 anni e una massima di 71 anni.\\
 La deviazione standard è di 14,4 anni, il che indica una certa variabilità all'interno del campione.\\
 
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{grafici/age.png}
-    \caption{Istogramma delle età.}
+    \caption{Distribuzione delle età.}
 \end{figure}
 
 Per quanto riguarda il genere, il campione è composto per la maggior parte da uomini (85,5\%), mentre le donne rappresentano il 14,5\% dei partecipanti, come illustrato nel grafico seguente.\\ Questa distribuzione indica una netta predominanza maschile nel campione, elemento da considerare nelle analisi successive.\\
@@ -322,14 +324,25 @@ Per quanto riguarda il genere, il campione è composto per la maggior parte da u
 
 \subsection{Distribuzione dei tempi finali di gara}
 I tempi di gara dei partecipanti, espressi in secondi, mostrano una media di circa 6.030 s (1 h 40 min) e una mediana di 6.000 s, con un minimo di 3.960 s (1 h 6 min) e un massimo di 8.280 s (2 h 18 min). \\
-La deviazione standard, pari a 885 s (circa 15 min), indica una certa variabilità tra i tempi registrati.\\
+La deviazione standard, pari a 885 s (circa 15 min), evidenzia una variabilità significativa tra le prestazioni osservate.\\
 
 Dal grafico a istogramma (Figura 3.3) si osserva che la maggior parte dei partecipanti si concentra intorno alla mediana, mentre valori estremi verso il minimo e il massimo risultano meno frequenti.
+
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{grafici/time_distribution.png}
     \caption{Distribuzione dei tempi in secondi.}
+\end{figure}
+
+
+Invece nel boxplot (figura 3.4), oltre a confermare quello già visto nel grafico precedente, si può notare un outlier che rappresenta una una prestazione significativamente più lenta rispetto al resto del campione.\\
+La presenza dell’outlier, pur rappresentando una prestazione atipica, è utile mantenerla perchè, nella fase di addestramento, consente ai modelli di apprendere anche scenari meno frequenti ma possibili.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{grafici/boxplot_tempi.png}
+    \caption{Boxplot dei tempi in minuti.}
 \end{figure}
 
 \section{Relazioni tra variabili e performance finale}
@@ -339,7 +352,7 @@ Tale analisi fornisce una visione complessiva delle relazioni lineari, evidenzia
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{grafici/mtx_corr.png}
+    \includegraphics[width=0.9\linewidth]{grafici/mtx_corr.png}
     \caption{Matrice di correlazione.}
 \end{figure}
 
@@ -354,16 +367,18 @@ Di queste sono stati tracciati degli scatterplot, in modo da visionare graficame
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{grafici/lmplot_z2_timemin.png}
+    \includegraphics[width=0.7\linewidth]{grafici/lmplot_z2_timemin.png}
     \caption{Correlazione tra allenamenti in Z2 e tempo finale}
 \end{figure}
 
 Dal grafico emerge una correlazione negativa tra il numero di allenamenti in Z2 e il tempo finale: all’aumentare degli allenamenti di corsa in zona 2, i tempi di gara tendono a ridursi, indicando un’associazione con prestazioni migliori.\\
 Si nota una dispersione elevata, ma l'intervallo di confidenza si restringe, suggerendo un trend plausibile.
 
+\clearpage
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{grafici/lmplot_power_timemin.png}
+    \includegraphics[width=0.7\linewidth]{grafici/lmplot_power_timemin.png}
     \caption{Correlazione tra allenamenti di potenza e tempo finale}
 \end{figure}
 
@@ -425,9 +440,57 @@ Questo suggerisce che i corridori più performanti tendono a privilegiare una pi
 
 
 \chapter{Previsione e risultati}
+Dopo la fase di esplorazione e preparazione dei dati, l’analisi si concentra ora sulla costruzione di modelli predittivi.\\
+L’obiettivo principale è stimare il tempo finale della mezza maratona a partire dalle caratteristiche fisiologiche e allenanti degli atleti, valutando quali tecniche di regressione siano più efficaci.\\
+
+In questo capitolo vengono dapprima descritti i modelli scelti, con particolare attenzione alle regressioni lineari penalizzate (Ridge, Lasso, Elastic Net), e successivamente presentati i risultati ottenuti in termini di accuratezza e capacità di generalizzazione. \\
+Infine, i modelli sono messi a confronto tramite le principali metriche di valutazione, così da individuare quello più adatto allo scopo della ricerca.
+
+Per permettere una adeguata valutazione della capacità predittiva dei modelli, il dataset è stato suddiviso in training set e test set con rapporto 80/20, impostando un seed in modo da garantire una riproducibilità coerente.\\
+I modelli sono stati addestrati esclusivamente sui dati di training; tutte le trasformazioni sono state fittate sul training e poi applicate al test per evitare data leakage.\\
+
+Non è stato creato un validation set distinto perchè la numerosità dei dati è limitata e l'introduzione di una terza porzione avrebbe ridotto notevolmente gli esempi disponibili per l'addestramento, peggiorando la stima dei parametri.\\
+
 \section{Scelta dei modelli}
+Per affrontare il problema della previsione dei tempi di gara, sono stati presi in considerazione diversi modelli di regressione, appartenenti sia alla famiglia lineare sia a quella non lineare.\\
+L’obiettivo è stato confrontare approcci semplici e interpretabili con metodi più complessi e flessibili, così da valutare il compromesso tra accuratezza e leggibilità dei risultati.\\
+
+Nello specifico, sono stati implementati i seguenti modelli.
+\paragraph{Regressione lineare multipla} 
+La regressione lineare multipla estende la regressione lineare semplice includendo
+più variabili esplicative. Parliamo comunque di modello “lineare” perché si ipotizza
+che la variabile risposta sia collegata a una \emph{combinazione lineare} delle variabili
+esplicative.
+
+Il modello si scrive come:
+\[
+y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \dots + \beta_p x_{pi} + e_i,
+\]
+dove $\beta_0$ è l’intercetta (il valore previsto di $y$ quando tutte le variabili
+esplicative valgono 0), $\beta_j$ è il coefficiente associato alla $j$-esima variabile
+esplicativa, ed $e_i$ è l’errore (residuo) per l’osservazione $i$.\\
+Con $\{x_{1},\dots,x_{p}\}$ fissate, $\beta_j$ rappresenta la variazione attesa di $y$ per
+un incremento unitario di $x_j$, a parità delle altre variabili.\\
+L’intercetta $\beta_0$ indica il livello base della risposta quando tutte le $x$ sono zero; se le
+variabili sono centrate/standardizzate, $\beta_0$ coincide con la media di $y$.\\
+L'analisi non consente di trarre inferenze causali, ma permette di studiare come un insime di variabili esplicative sia associato alla variabile risposta di interesse. \cite{K4} \\
+
+\paragraph{Support Vector Regression} 
+%\textbf{Random Forest} e \textbf{Gradient Boost Regressor}
+%\textbf{XGBoost} (XGB)
+%\textbf{Gaussian Process Regressor}
+
+
 \subsection{Modelli con penalizzazione}
+I modelli lineari con penalizzazione (Ridge, Lasso, Elastic Net) aggiungono un termine di regolarizzazione alla funzione obiettivo per controllare la complessità del modello e migliorare la capacità di generalizzazione. L’idea è introdurre un compromesso bias–variance: si accetta un leggero aumento del bias in cambio di una riduzione della varianza delle stime, rendendo il modello più stabile su nuovi dati.
+
+
+
+
+
 \section{Risultati e metriche delle regressioni}
+
+
 \section{Confronto tra modelli}
 
 \clearpage
@@ -454,6 +517,9 @@ Queste sono le conclusioni. Riferimento alla bibliografia \cite{K3,K4}.
 
 \bibitem{Garmin2025} Garmin. "How Garmin Performance Predictions Work." Support Center, Garmin. Consultato il 18 settembre 2025. \url{https://support.garmin.com/en-US/?faq=HUB4yrzJkg1BbgmozWkBm7}
 \bibitem{Strava2025} Strava. "Performance Predictions." Support Center, Strava. Consultato il 18 settembre 2025. \url{https://support.strava.com/hc/en-us/articles/35272903405965-Performance-Predictions}
+
+\bibitem{K4} Tranmer, Mark, and Mark Elliot. "Multiple linear regression." The Cathie Marsh Centre for Census and Survey Research (CCSR) 5.5 (2008): 1-5.
+
 
 \end{thebibliography}
 
