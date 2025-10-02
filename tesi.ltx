@@ -248,6 +248,12 @@ Una volta finita la fase di raccolta dati, la tabella finale contenente le rispo
 Le risposte al questionario sono state inizialmente controllate visualmente su un foglio di calcolo. 
 Le tuple con valori incomprensibili, incoerenti o con un’elevata presenza di risposte “non disponibili” sono state rimosse, riducendo il numero totale di osservazioni a 150.\\
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{grafici/raw_data.png}
+    \caption{Situazione iniziale del dataset.}
+\end{figure}
+
 \subsection{Gestione dei valori mancanti e outlier}
 In questa fase, i dati sono stati esportati in un file csv e caricati in uno script Python per una gestione più accurata di valori mancanti e outlier.\\
 
@@ -257,7 +263,7 @@ Successivamente, sono state individuate le colonne con valori nulli.\\
 In questo caso, erano due features: VO$_2$max e cadence (\textit{cadenza}).\\
 L'eliminazione della colonna relativa al VO$_2$max ha inciso negativamente sui risultati finali dei modelli, perchè essendo molto correlata al tempo finale, avrebbe sicuramente aiutato a ottenere errori minori.\\
 
-Gli eventuali valori mancanti sono stati verificati utilizzando il seguente comando:
+I valori mancanti sono stati verificati utilizzando il seguente comando:
 \begin{verbatim}
     df.isnull().values.any()
 \end{verbatim}
@@ -456,6 +462,7 @@ Per affrontare il problema della previsione dei tempi di gara, sono stati presi 
 L’obiettivo è stato confrontare approcci semplici e interpretabili con metodi più complessi e flessibili, così da valutare il compromesso tra accuratezza e leggibilità dei risultati.\\
 
 Nello specifico, sono stati implementati i seguenti modelli.
+
 \paragraph{Regressione lineare multipla} 
 La regressione lineare multipla estende la regressione lineare semplice includendo
 più variabili esplicative. Parliamo comunque di modello “lineare” perché si ipotizza
@@ -473,12 +480,38 @@ Con $\{x_{1},\dots,x_{p}\}$ fissate, $\beta_j$ rappresenta la variazione attesa 
 un incremento unitario di $x_j$, a parità delle altre variabili.\\
 L’intercetta $\beta_0$ indica il livello base della risposta quando tutte le $x$ sono zero; se le
 variabili sono centrate/standardizzate, $\beta_0$ coincide con la media di $y$.\\
-L'analisi non consente di trarre inferenze causali, ma permette di studiare come un insime di variabili esplicative sia associato alla variabile risposta di interesse. \cite{K4} \\
+L'analisi non consente di trarre inferenze causali, ma permette di studiare come un insieme di variabili esplicative sia associato alla variabile risposta di interesse. \cite{K4} \\
 
-\paragraph{Support Vector Regression} 
-%\textbf{Random Forest} e \textbf{Gradient Boost Regressor}
+\paragraph{SVR} 
+Support Vector Regression è un'estensione delle Support Vector Machines (SVM), progettata per problemi di regressione, dove l'obiettivo è prevedere valori continui invece di etichette discrete.\\
+Il funzionamento si basa sull'utilizzo dei \textit{support vectors}, un sottoinsieme dei dati destinati alla fase di training, per derivare una funzione di decisione con buone capacità di generalizzazione.\\
+Questo modello introduce una funzione di perdita che consente di approssimare i valori di output, mantenendo le deviazioni dai valori target effettivi all'interno di un intervallo specificato $\epsilon$.\\
+La funzione di regressione è espressa in questo modo:
+$$
+f(x)= \langle w,x \rangle + b
+$$
+Per gestire relazioni non-lineari, SVR utilizza delle funzioni kernel che mappano implicitamente i dati originali di input in spazi con molte più dimensioni, dove le relazioni tra i dati possono diventare quasi lineari e quindi più facili da modellare.\\
+I kernel che sono stati utilizzati in questo lavoro sono stati il radial basis function (RBF) e il polinomiale (poly) per l'hyperparameter tuning.
+
+
+
+\paragraph{Random Forest Regression}
+Questo metodo di apprendimento combina le previsioni di più alberi decisionali per produrre una previsione più accurata e stabile, calcolando la media dei risultati.\\
+Il funzionamento si basa sulla creazione di alberi decisionali, ognuno dei quali è addestrato su un sottoinsieme casuale di dati.
+Il processo inizia con una selezione casuale di righe dal dataset, reinserendo ogni volta i campioni estratti, per formare diversi set di dati di addestramento per ogni albero.\\
+Successivamente, si esegue il \textit{feature sampling} dove solo un sottoinsieme di features viene utilizzato per costruire un albero, garantendo la diversità dei modelli.\\
+Dopo che gli alberi sono stati addestrati, ognuno di questi effettua una previsione sulla variabile continua target e la previsione finale è data dalla media dei risultati dei singoli alberi.\\
+Questo approccio è vantaggioso perché i singoli alberi decisionali, essendo addestrati solo con un sottoinsieme di dati, sono soggetti a overfitting, specialmente con dati complessi.\\
+Quindi, col calcolo della media, si riesce a ridurre al minimo la varianza, portando a previsioni più precise e migliorando la generalizzazione del modello.
+
+
+
+%\textbf{Gradient Boost Regressor}
+
 %\textbf{XGBoost} (XGB)
+
 %\textbf{Gaussian Process Regressor}
+
 
 
 \subsection{Modelli con penalizzazione}
