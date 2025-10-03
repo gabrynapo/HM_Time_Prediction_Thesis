@@ -154,7 +154,7 @@ Questo perchè, nei periodi più prossimi alle gare, i programmi di allenamento 
 
 Le domande sono state organizzate secondo una sequenza logica che procede dal generale al particolare: innanzitutto i dati anagrafici e antropometrici (età, sesso, peso, altezza); poi le abitudini di allenamento (anni di pratica, tipologia e frequenza degli allenamenti, chilometraggio medio settimanale, ore di sonno) ed infine i parametri fisiologici e i risultati prestazionali (frequenza cardiaca, cadenza, tempi di gara).\\
 
-Per garantire un'analisi dei dati efficace, sono state privilegiate domande a risposta chiusa o numerica, limitando le risposte aperte ai soli casi in cui fosse indispensabile, come l'inserimento dei tempi.\\
+Per garantire un'analisi dei dati efficace, sono state privilegiate domande a risposta chiusa o numerica, limitando le risposte aperte ai soli casi in cui fossero indispensabili, come l'inserimento dei tempi.\\
 Un ulteriore criterio adottato nel questionario riguarda l'imposizione di limiti minimi (es. \textit{"Meno di 10 km"}) e massimi (es. \textit{"Più di 10 km"}) alle risposte nelle domande numeriche relative agli anni di allenamento e ai chilometri settimanali.\\
 Questa scelta è dovuta al fatto che in questo modo si evitano risposte palesemente errate o fuori scala.\\
 Questa struttura non solo consente un'elaborazione statistica valida, ma riduce anche il rischio di bias: la collocazione delle domande prestazionali alla fine, infatti, evita che esse influenzino le risposte relative all'allenamento o allo stile di vita.\\
@@ -203,9 +203,6 @@ Nel complesso, le variabili richieste sono le seguenti:
 Il campione finale raccolto ha ottenuto 167 risposte, tutte da corridori amatori che hanno disputato almeno una mezza maratona negli ultimi dodici mesi.\\
 
 Per ottenere il maggior numero possibile di risposte, il questionario è stato diffuso attraverso diversi canali: durante le gare podistiche agli atleti partecipanti e, parallelamente, tramite social media, inviando il link del modulo agli allenatori del settore e chiedendo di divulgarlo tra i propri atleti.\\
-
-Si vedrà successivamente nella fase di esplorazione e visualizzazione, come la condivisione del questionario abbia influito sul campione raccolto.\\ 
-
 
 Questa strategia ha permesso di raggiungere un pubblico mirato e pertinente, aumentando la rappresentatività e la qualità delle informazioni raccolte.\\
 
@@ -261,7 +258,7 @@ In questa fase, i dati sono stati esportati in un file csv e caricati in uno scr
 
 Successivamente, sono state individuate le colonne con valori nulli.\\
 In questo caso, erano due features: VO$_2$max e cadence (\textit{cadenza}).\\
-L'eliminazione della colonna relativa al VO$_2$max ha inciso negativamente sui risultati finali dei modelli, perchè essendo molto correlata al tempo finale, avrebbe sicuramente aiutato a ottenere errori minori.\\
+L'eliminazione della colonna relativa al VO$_2$max ha inciso negativamente sui risultati finali dei modelli, poiché essendo molto correlata al tempo finale, avrebbe sicuramente aiutato a ottenere previsioni più accurate.\\
 
 I valori mancanti sono stati verificati utilizzando il seguente comando:
 \begin{verbatim}
@@ -332,7 +329,7 @@ Per quanto riguarda il genere, il campione è composto per la maggior parte da u
 I tempi di gara dei partecipanti, espressi in secondi, mostrano una media di circa 6.030 s (1 h 40 min) e una mediana di 6.000 s, con un minimo di 3.960 s (1 h 6 min) e un massimo di 8.280 s (2 h 18 min). \\
 La deviazione standard, pari a 885 s (circa 15 min), evidenzia una variabilità significativa tra le prestazioni osservate.\\
 
-Dal grafico a istogramma (Figura 3.3) si osserva che la maggior parte dei partecipanti si concentra intorno alla mediana, mentre valori estremi verso il minimo e il massimo risultano meno frequenti.
+Dal grafico a istogramma (Figura 3.3) si osserva che la maggior parte dei partecipanti si concentra intorno alla media, mentre valori estremi verso il minimo e il massimo risultano meno frequenti.
 
 
 \begin{figure}[H]
@@ -343,7 +340,7 @@ Dal grafico a istogramma (Figura 3.3) si osserva che la maggior parte dei partec
 
 
 Invece nel boxplot (figura 3.4), oltre a confermare quello già visto nel grafico precedente, si può notare un outlier che rappresenta una una prestazione significativamente più lenta rispetto al resto del campione.\\
-La presenza dell’outlier, pur rappresentando una prestazione atipica, è utile mantenerla perchè, nella fase di addestramento, consente ai modelli di apprendere anche scenari meno frequenti ma possibili.
+La presenza dell’outlier, pur rappresentando una prestazione atipica, è utile mantenerla poiché, nella fase di addestramento, consente ai modelli di apprendere anche scenari meno frequenti ma possibili.
 
 \begin{figure}[H]
     \centering
@@ -506,11 +503,16 @@ Quindi, col calcolo della media, si riesce a ridurre al minimo la varianza, port
 
 
 
-%\textbf{Gradient Boost Regressor}
+\paragraph{Gradient Boost Regressor}
+% Cita anche XGB
+Questo modello si basa sul Gradient Boosting, una tecnica di machine learning basata su un insieme di alberi decisionali.\\ Il principale punto di forza risiede nel suo processo di apprendimento additivo in cui, ogni albero, progressivamente, aggiunge valore correggendo gli errori residui.\\
+Per la regressione, la previsione finale viene ottenuta sommando i risultati di tutti gli alberi costruiti.\\
+Il meccanismo che porta al risultato inizia prevedendo la media della variabile target. Poi, per un numero prestabilito di iterazioni, si calcolano i residui (errori), si addestra un albero decisionale per prevederli e si aggiungono le previsioni del nuovo albero al totale parziale.\\
+Questo processo genera un tasso di apprendimento che viene trasmesso da albero a albero e che, infine, consente di ottenere una previsione finale accurata, combinando i contributi di tutti gli alberi, pesati dal tasso di apprendimento.
+Inoltre, è stato utilizzato \textbf{XGBoost}, una versione avanzata del Gradient Boosting, che offre miglioramenti in termini di velocità e prestazioni grazie a tecniche di ottimizzazione avanzate e alla regolarizzazione.
 
-%\textbf{XGBoost} (XGB)
 
-%\textbf{Gaussian Process Regressor}
+\paragraph{Gaussian Process Regressor}
 
 
 
