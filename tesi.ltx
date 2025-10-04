@@ -256,7 +256,7 @@ In questa fase, i dati sono stati esportati in un file csv e caricati in uno scr
 
 È stata innanzitutto rimossa la colonna "Timestamp", che riportava la data e l'ora di compilazione del questionario, in quanto non rilevante ai fini dell’analisi.\\
 
-Successivamente, sono state individuate le colonne con valori nulli.\\
+Successivamente, sono state individuate le colonne con numerosi valori nulli.\\
 In questo caso, erano due features: VO$_2$max e cadence (\textit{cadenza}).\\
 L'eliminazione della colonna relativa al VO$_2$max ha inciso negativamente sui risultati finali dei modelli, poiché essendo molto correlata al tempo finale, avrebbe sicuramente aiutato a ottenere previsioni più accurate.\\
 
@@ -277,7 +277,7 @@ Al termine di questa fase, il dataset risultante contava 145 righe pronte per la
 Per permettere analisi quantitative, le variabili testuali sono state convertite in formato numerico.\\
 
 La variabile relativa al sesso è stata codificata in formato numerico, attribuendo il valore 0 a "Femmina" e il valore 1 a "Maschio".\\
-La variabile relativa agli anni di allenamento, inizialmente espressa in forma testuale, è stata trasformata in formato numerico: le risposte "Meno di 1" sono state ricodificate come 0.5 (mezzo anno di esperienza), mentre "10 in su" è stata ricodificata come 11. Successivamente, l’intera colonna è stata convertita in valori di tipo float.\\
+La variabile relativa agli anni di allenamento, inizialmente espressa in forma testuale, è stata trasformata in formato numerico: le risposte "Meno di 1" sono state ricodificate come 0.5 (mezzo anno di esperienza), mentre "10 in su" è stata ricodificata come 11. Successivamente, l’intera colonna è stata convertita in valori di tipo float.
 
 Analogamente a quanto fatto per gli anni di allenamento, la variabile "avg\_km\_week" è stata trasformata in formato numerico. Le risposte "Più di 80" sono state sostituite con 85 e l’intera colonna è stata convertita in tipo intero.\\
 
@@ -325,9 +325,12 @@ Per quanto riguarda il genere, il campione è composto per la maggior parte da u
     \caption{Percentuale di uomini e donne nel campione.}
 \end{figure}
 
-\subsection{Distribuzione dei tempi finali di gara}
+\subsection{Distribuzione dei tempi finali di gara e passo}
 I tempi di gara dei partecipanti, espressi in secondi, mostrano una media di circa 6.030 s (1 h 40 min) e una mediana di 6.000 s, con un minimo di 3.960 s (1 h 6 min) e un massimo di 8.280 s (2 h 18 min). \\
 La deviazione standard, pari a 885 s (circa 15 min), evidenzia una variabilità significativa tra le prestazioni osservate.\\
+
+Analizzando il passo al chilometro, gli atleti presenti nel campione raccolto corrono mediamente la mezza a 4:46 m/km, con una mediana di 4:44 m/km. La velocità media risulta leggermente più elevata nei primi 10 km (4:42 m/km, mediana 4:38 m/km) e più contenuta nella seconda parte (4:49/km, mediana 4:50/km). \\
+Questo indica un calo di ritmo nella fase conclusiva, in linea con l’affaticamento accumulato e una partenza tendenzialmente più brillante.\\
 
 Dal grafico a istogramma (Figura 3.3) si osserva che la maggior parte dei partecipanti si concentra intorno alla media, mentre valori estremi verso il minimo e il massimo risultano meno frequenti.
 
@@ -347,6 +350,8 @@ La presenza dell’outlier, pur rappresentando una prestazione atipica, è utile
     \includegraphics[width=0.7\linewidth]{grafici/boxplot_tempi.png}
     \caption{Boxplot dei tempi in minuti.}
 \end{figure}
+
+
 
 \section{Relazioni tra variabili e performance finale}
 
@@ -398,7 +403,8 @@ Tuttavia, il grafico è molto dispersivo e presenta una banda di confidenza molt
     \caption{Correlazione tra ore di sonno medie e tempo finale}
 \end{figure}
 
-Nel grafico la pendenza è quasi nulla, quindi l’aumento delle ore medie di sonno non si associa a un miglioramento sistematico dei tempi di gara nel campione considerato.\\
+Nel grafico precedente si può notare come la pendenza sia quasi nulla.
+Di conseguenza, l’aumento delle ore medie di sonno non si associa a un miglioramento sistematico dei tempi di gara nel campione considerato.\\
 La nuvola dei punti rimane ampia lungo tutto l’asse e la banda di confidenza non è stretta, segnalando che l’effetto medio stimato è debole.
 
 \section{Analisi comparative tra quartili}
@@ -517,16 +523,28 @@ Inoltre, è stato utilizzato \textbf{XGBoost}, una versione avanzata del Gradien
 
 
 \subsection{Modelli con penalizzazione}
-I modelli lineari con penalizzazione (Ridge, Lasso, Elastic Net) aggiungono un termine di regolarizzazione alla funzione obiettivo per controllare la complessità del modello e migliorare la capacità di generalizzazione. L’idea è introdurre un compromesso bias–variance: si accetta un leggero aumento del bias in cambio di una riduzione della varianza delle stime, rendendo il modello più stabile su nuovi dati.
+I modelli lineari con penalizzazione (Ridge, Lasso, Elastic Net) aggiungono un termine di regolarizzazione alla funzione obiettivo per controllare la complessità del modello e migliorare la capacità di generalizzazione.\\
+L’idea è introdurre un compromesso bias–variance: si accetta un leggero aumento del bias in cambio di una riduzione della varianza delle stime, rendendo il modello più stabile su nuovi dati e prevenendo l'overfitting.
 
+\paragraph{Lasso}
+Least Absolute Shrinkage and Selection Operator (L1) è una tecnica di regressione che viene utilizzata per la regolarizzazione e la selezione delle variabili. \\
+Identifica chiaramente le feature con scarsa correlazione rispetto alla variabile target, riducendo i coefficienti a zero e migliorando la generalizzazione del modello.\\
 
+\paragraph{Ridge}
+La Ridge Regression è una tecnica di regolarizzazione che mitiga overfitting e multicollinearità riducendo e stabilizzando i coefficienti.\\
+A differenza del metodo Lasso, i coefficienti non vengono completamente azzerati, bensì vengono ridotti (operazione di \textit{shrinkage}).\\
+Nei casi di multicollinearità, la penalizzazione stabilizza le stime e distribuisce il peso tra i predittori correlati.\\
 
-
+\paragraph{ElasticNet}
+Questa tecnica di regolarizzazione combina le penalità L1 (Lasso) e L2 (Ridge). 
+Attraverso questa combinazione, il modello riesce a bilanciare efficacemente il compromesso tra selezione delle variabili e contrazione dei coefficienti.\\
 
 \section{Risultati e metriche delle regressioni}
 
 
 \section{Confronto tra modelli}
+
+
 
 \clearpage
 % --- CONCLUSIONI ---
@@ -561,6 +579,40 @@ Queste sono le conclusioni. Riferimento alla bibliografia \cite{K3,K4}.
 % --- RINGRAZIAMENTI (facoltativi) ---
 \chapter*{Ringraziamenti}
 \thispagestyle{empty}
-Qui possiamo ringraziare il mondo intero!
 
+Ed eccoci qui, alla fine di questa bellissima e intrepida corsa.
+Come un corridore che si appresta a superare il traguardo, mi tornano in mente tutte le persone incontrate lungo il percorso, chi solo per pochi metri, chi invece per tutta la gara.
+
+Un grazie, innanzitutto, a Luca per essere sempre stato disponibile a darmi una mano e per avermi spinto costantemente a superare i miei limiti in ogni allenamento e in ogni gara.
+
+Ai miei colleghi, vecchi e nuovi. Da ognuno di voi ho imparato qualcosa
+
+In questo percorso però non sono mai stato da solo (letteralmente). C’è stata una persona, o meglio un fratello, con cui ho avuto la fortuna di condividere tutto, dalla stanza, alla scrivania in ufficio, ai banchi di università.
+Grazie ad Antonio, per essere sempre stato di supporto, per avermi sempre fatto tenere il passo. Grazie per tutte le volte che mi hai chiesto: “Ma se io ti dicessi…”, che mi facevano dubitare su qualsiasi cosa.
+Questa volta però, ho io la domanda per te. Ma se ti avessi detto che dal primo superiore, da completi sconosciuti, ci saremmo ritrovati qui, ci avresti mai creduto?
+
+Una volta varcata la linea che sancisce la fine, ecco che invece ritrovo le persone che durante tutto il percorso non hanno mai smesso di credere in me, che anche se distanti erano lì con un pensiero, con una parola o con una telefonata. Pronti ad aspettarmi al traguardo.
+
+Grazie a tutta la mia famiglia, zii e cugini, abruzzesi e veneti.
+
+A Giulio, per il continuo sostegno sportivo e personale durante questi anni.
+
+A tutti i miei amici e amiche di Vasto, che nonostante la distanza di questi anni, ogni volta che riscendevo sembrava che non me ne fossi andato nemmeno per un giorno. 
+
+Ad Angelo, che nonostante non ci sentiamo spesso, quando ci risentiamo…. . 
+
+A Giacomo, ormai amici da più di vent'anni. 
+
+A Giuseppe, compagno di concerti.
+
+A Lorenzo, che con la sua lucida sincerità, è sempre stato pronto a darmi i giusti consigli nei giusti momenti.
+
+A Marcello, per avermi insegnato e dimostrato che se la vita ti pone davanti a una maratona, con  determinazione e volontà, si può chiudere lo stesso anche se ti eri preparato per farne solo metà.
+
+Ad Alessia per essere sempre stata la parte irrazionale, per avermi insegnato ad esprimere 
+
+Ai miei genitori per il continuo supporto e sopporto. Non sono mai stato bravo ad esprimermi, forse non lo sarò mai, ma ho sempre riconosciuto gli sforzi e i sacrifici fatti
+
+
+Grazie ancora a tutti. Alla prossima gara!
 \end{document}
