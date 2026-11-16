@@ -8,6 +8,11 @@
 \usepackage{pdfpages}
 \usepackage{float}
 \usepackage{enumitem}
+\usepackage[newfloat]{minted}
+\usepackage{xcolor}
+\usepackage{inconsolata}   % font monospace piacevole
+\usemintedstyle{friendly}
+
 
 % Margini e layout
 \usepackage[a4paper,margin=3cm]{geometry}
@@ -42,7 +47,7 @@
 
 {\small\bfseries SCUOLA DI SCIENZE\\
 Corso di Laurea in Informatica per il management}\\[2cm]
-{\LARGE\bfseries Dall’analisi esplorativa alla previsione: studio dei tempi di mezza maratona basato su dati raccolti tramite questionario}\\[3cm]
+{\LARGE\bfseries Analisi e previsione dei tempi in mezza maratona basate su dati raccolti tramite questionario}\\[7cm]
 \begin{minipage}[t]{0.47\textwidth}
 \raggedright
 \large\bfseries Relatore:\\
@@ -54,7 +59,7 @@ Chiar.ma Prof.ssa\\
 \large\bfseries Presentata da:\\
 Gabriele Napoletano
 \end{minipage}\\[2cm]
-{\large\bfseries Sessione III\\
+{\large\bfseries Sessione II\\
 Anno Accademico 2024-2025}
 \end{titlepage}
 
@@ -78,7 +83,7 @@ Anno Accademico 2024-2025}
 La presente tesi si concentra sull'analisi e sulla previsione delle prestazioni degli atleti nella mezza maratona, con particolare attenzione ai fattori che influenzano il risultato finale.   \\
 
 L’interesse per questo tema nasce da una passione personale non solo per il mondo della corsa, ma anche per l’analisi dei dati e per le possibilità che essi offrono nel supportare processi decisionali.\\
-In un contesto sportivo in costante crescita come quello del running, è infatti sempre più diffuso l’impiego di strumenti tecnologici dedicati al monitoraggio dello stato di forma e dei progressi degli atleti. Tali strumenti si basano su modelli di machine learning addestrati su grandi quantità di dati raccolti dalle aziende attraverso l’utilizzo dei loro prodotti da parte degli sportivi.\\
+In un contesto sportivo in costante crescita come quello del running, è infatti sempre più diffuso l’impiego di strumenti tecnologici dedicati al monitoraggio dello stato di forma e dei progressi degli atleti. Tali strumenti basano le proprie previsioni su modelli di machine learning addestrati su grandi quantità di dati raccolti dalle aziende attraverso l’utilizzo dei loro prodotti da parte degli sportivi.\\
 È proprio a partire da questa realtà che prende forma l’idea per questa tesi.\\ 
 
 
@@ -87,8 +92,7 @@ Gli obiettivi principali sono sia la scoperta di caratteristiche salienti del da
 
 Il dataset utilizzato è il risultato di un questionario elaborato appositamente per questo studio, che ha raccolto un totale di 167 risposte.\\
 
-La tesi è organizzata in quattro capitoli: il primo introduce il contesto e specifica gli obiettivi della ricerca, il secondo descrive il questionario e le operazioni di pulizia effettuate, il terzo riguarda l'analisi condotta sui dati, mentre l'ultimo presenta i modelli utilizzati e i risultati delle previsioni.\\
-Infine, le conclusioni con alcune considerazioni sul lavoro svolto.
+La tesi è organizzata in quattro capitoli: il primo introduce il contesto e specifica gli obiettivi della ricerca, il secondo descrive il questionario e le operazioni di pulizia effettuate, il terzo riguarda l'analisi condotta sui dati, mentre l'ultimo presenta i modelli utilizzati e i risultati delle previsioni. Infine, le conclusioni con alcune considerazioni sul lavoro svolto.
 
 
 
@@ -100,20 +104,20 @@ Infine, le conclusioni con alcune considerazioni sul lavoro svolto.
 \chapter{Contesto e obiettivi della ricerca}
 
 \section{Contesto}
-Il panorama della corsa podistica ha registrato negli ultimi anni una crescita straordinaria, con altissimi incrementi di partecipazione. La mezza maratona si è consolidata come la distanza più accessibile e praticata, rappresentando il punto di ingresso ideale per corridori di ogni livello. \cite{K1} \\
+Il panorama della corsa podistica ha registrato negli ultimi anni una crescita straordinaria, con altissimi incrementi di partecipazione. La mezza maratona si è consolidata come la distanza più accessibile e praticata (distanza ufficiale: 21,0975 km), rappresentando il punto di ingresso ideale per corridori di ogni livello. \cite{K1} \\
 Parallelamente, il mondo dello sport ha assistito a una vera e propria rivoluzione tecnologica caratterizzata dalla diffusione massiva di dispositivi wearable e strumenti di monitoraggio delle prestazioni.\\
 L’uso di tecnologie indossabili per l’auto-monitoraggio è recentemente emerso come una nuova tendenza volta a tracciare lo stile di vita e ottimizzare il benessere personale in termini di salute e forma fisica. \cite{K2}\\
 
-Il settore del fitness tracking e dell’analisi delle prestazioni nella corsa è in continua espansione, grazie alla disponibilità di grandi quantità di dati strutturati e non strutturati derivanti dagli allenamenti degli atleti. L’aumento del volume di questi dati ha favorito lo sviluppo e l’applicazione di tecniche di intelligenza artificiale e machine learning, impiegate per analizzare le prestazioni e stimare in modo realistico i tempi gara.\\
+Il settore del fitness tracking e dell’analisi delle prestazioni nella corsa è in continua espansione, grazie alla disponibilità di grandi quantità di dati strutturati e non strutturati derivanti dagli allenamenti degli atleti.\\ L’aumento del volume di questi dati ha favorito lo sviluppo e l’applicazione di tecniche di machine learning, impiegate per analizzare le prestazioni e stimare in modo realistico i tempi gara.\\
 Nel contesto della corsa, gli algoritmi di machine learning vengono utilizzati per addestrare modelli predittivi basati su dati reali di allenamento e attività, consentendo di prevedere le prestazioni su diverse distanze.\\
 L’impiego di questi strumenti permette agli atleti e agli allenatori di monitorare i progressi, adattare i carichi di allenamento e ottenere stime più precise dei tempi gara, rendendo l’analisi dei dati uno strumento sempre più centrale nella preparazione atletica. \cite{K3} \\
 
-In questo panorama, emergono approcci metodologici differenti per la predizione delle prestazioni.\\
+In questo panorama, emergono approcci metodologici differenti per la previsione delle prestazioni.\\
 
 Garmin, leader nel settore dei dispositivi GPS per il fitness, basa il suo sistema di Race Predictor sul VO$_2$max stimato degli utenti, utilizzando questo parametro fisiologico come baseline per generare previsioni dei tempi di gara su diverse distanze.\\
 Il sistema integra i dati storici di allenamento con le misurazioni della capacità aerobica per fornire stime personalizzate. \cite{Garmin2025} \\
 
-Strava, piattaforma social per atleti con oltre 100 milioni di utenti attivi, ha introdotto \textit{Performance Predictions}, un modello di machine learning che utilizza oltre 100 attributi dell'atleta e si basa esclusivamente su dati di attività reali, senza ricorrere ad input teorici come il VO$_{2}$max stimato.\\
+Strava, piattaforma social per atleti con oltre 100 milioni di utenti attivi in 195 paesi del mondo e più di 40 milioni di attività caricate a settimana\footnote{Sara Canali, \textit{GQ Italia}, 13 settembre 2025, \url{https://www.gqitalia.it/article/strava-tracker-gps-social-media}}, ha introdotto \textit{Performance Predictions}, un modello di machine learning che utilizza oltre 100 attributi dell'atleta e si basa esclusivamente su dati di attività reali, senza ricorrere a parametri teorici come il VO$_{2}$max stimato.\\
 Il sistema confronta le prestazioni con quelle di atleti dal profilo di allenamento simile, così da generare stime il più realistiche possibile fondate su risultati effettivamente raggiunti da soggetti comparabili.
 
 Un elemento distintivo dell'approccio di Strava è il calcolo indipendente delle previsioni per ciascuna distanza (5 km, 10 km, mezza maratona, maratona), che consente di riflettere le specificità dell'allenamento: volumi settimanali e lavori lunghi tendono a migliorare le stime sulle distanze lunghe più che su quelle corte, mentre cicli focalizzati su velocità e potenza influenzano maggiormente i 5 km e i 10 km.\\
@@ -129,7 +133,7 @@ La ricerca si propone di costruire un processo completo di analisi dei dati fina
 
 In primo luogo, l'obiettivo è garantire l'affidabilità dei dati ricavati attraverso una fase rigorosa di pulizia e preparazione dei dati, che includa il trattamento sistematico di valori mancanti, outlier e la standardizzazione delle variabili, tenendo traccia di tutti i passaggi effettuati per arrivare al dataset finale.\\
 Successivamente, si intende condurre un'analisi statistica esplorativa approfondita per descrivere la distribuzione delle principali caratteristiche degli atleti e dei loro allenamenti, mettere in evidenza pattern e relazioni tra variabili e individuare i fattori maggiormente associati al tempo finale sulla distanza della mezza maratona.\\
-Tale fase di visualizzazione ha lo scopo di informare in modo \textit{data-driven} le scelte di modellazione del dataset, la selezione delle variabili e la definizione di adeguate strategie di validazione.\\
+Tale fase di visualizzazione ha lo scopo di informare in modo \textit{data-driven} le scelte di modellazione del dataset e la selezione delle variabili.\\
 
 Sulla base delle evidenze emerse dall'esplorazione, l'obiettivo successivo è sviluppare modelli predittivi in grado di stimare con accuratezza i tempi di gara, privilegiando approcci che massimizzino sia l'accuratezza sia la stabilità delle stime.\\
 
@@ -139,7 +143,7 @@ In sintesi, la tesi mira a coniugare qualità del dato, chiarezza interpretativa
 
 \section{Struttura del questionario}
 
-Il questionario è stato sviluppato appositamente nell'ambito di questo lavoro di ricerca, poichè non sono state individuate risorse o strumenti già disponibili online che raccogliessero in modo organico e mirato i dati utili all'analisi.\\
+Il questionario è stato sviluppato appositamente nell'ambito di questo lavoro di ricerca, poiché non sono state individuate risorse o strumenti già disponibili online che raccogliessero in modo organico e mirato i dati utili all'analisi.\\
 L'obiettivo principale era indagare i fattori anagrafici, fisiologici e legati all'allenamento che possono influenzare la performance nella mezza maratona.\\
 Per questo motivo, la struttura è stata concepita per accompagnare il rispondente in modo progressivo, partendo dalle informazioni generali (caratteristiche personali) fino ad arrivare a dettagli più specifici (parametri di allenamento e risultati cronometrici), mantenendo al tempo stesso una compilazione chiara, rapida e intuitiva.
 
@@ -150,9 +154,9 @@ La scelta delle domande è stata guidata dalle principali variabili collegate al
 Fattori come il VO$_2$max, la frequenza cardiaca, la cadenza e il volume di allenamento settimanale sono, infatti, determinanti per il rendimento in gara.\\
 
 Per garantire coerenza e confrontabilità dei dati, le domande sugli allenamenti facevano riferimento alle quattro settimane precedenti la mezza maratona, periodo ritenuto più rappresentativo della condizione atletica al momento della gara.
-Questo perchè, nei periodi più prossimi alle gare, i programmi di allenamento prevedono in genere una riduzione significativa del volume (\textit{tapering}), e quindi non risulterebbe una variabile rappresentativa della preparazione complessiva.\\
+Questo perché, nei periodi più prossimi alle gare, i programmi di allenamento prevedono in genere una riduzione significativa del volume (\textit{tapering}), e quindi non risulterebbe una rappresentazione veritiera della preparazione complessiva.\\
 
-Le domande sono state organizzate secondo una sequenza logica che procede dal generale al particolare: innanzitutto i dati anagrafici e antropometrici (età, sesso, peso, altezza); poi le abitudini di allenamento (anni di pratica, tipologia e frequenza degli allenamenti, chilometraggio medio settimanale, ore di sonno) ed infine i parametri fisiologici e i risultati prestazionali (frequenza cardiaca, cadenza, tempi di gara).\\
+Le domande sono state organizzate secondo una sequenza logica che procede dal generale al particolare: innanzitutto i dati anagrafici e antropometrici (età, sesso, peso, altezza); poi le abitudini di allenamento (anni di pratica, tipologia e frequenza degli allenamenti, chilometraggio medio settimanale, ore di sonno) ed infine i parametri fisiologici e i risultati prestazionali (frequenza cardiaca, cadenza media, tempi di gara).\\
 
 Per garantire un'analisi dei dati efficace, sono state privilegiate domande a risposta chiusa o numerica, limitando le risposte aperte ai soli casi in cui fossero indispensabili, come l'inserimento dei tempi.\\
 Un ulteriore criterio adottato nel questionario riguarda l'imposizione di limiti minimi (es. \textit{"Meno di 10 km"}) e massimi (es. \textit{"Più di 10 km"}) alle risposte nelle domande numeriche relative agli anni di allenamento e ai chilometri settimanali.\\
@@ -177,7 +181,7 @@ Nel complesso, le variabili richieste sono le seguenti:
 
     \item Numero di allenamenti settimanali di ripetute/fartlek: misura l’impegno in sedute di qualità ad alta intensità, importanti per migliorare velocità, soglia anaerobica e capacità di gara.
 
-    \item Numero di allenamenti settimanali in palestra: rileva il tempo dedicato a forza e mobilità, elementi che possono ridurre il rischio di infortuni e migliorare l’efficienza di corsa.
+    \item Numero di allenamenti settimanali di forza: possono essere allenamenti in palestra o ripetute in salita. Rileva il tempo dedicato a forza e mobilità, elementi che possono ridurre il rischio di infortuni e migliorare l’efficienza di corsa.
 
     \item Volume settimanale: chilometri totali corsi in una settimana; è uno dei principali indicatori del carico di allenamento e della capacità di resistenza.
 
@@ -228,13 +232,12 @@ Questa strategia ha permesso di raggiungere un pubblico mirato e pertinente, aum
 
 La pulizia e la preparazione del dato (\textit{"data cleaning"} e \textit{"data preparation"}) rappresentano fasi fondamentali in qualsiasi studio che si basi su analisi statistiche o sull'addestramento di modelli predittivi.\\
 I dati raccolti, soprattutto quando provengono da fonti eterogenee o da questionari, possono presentare errori, valori mancanti o formati incoerenti.\\
-Dunque, prima di procedere con l'applicazione delle tecniche di regressione, classificazione o modelli di previsione delle performance, è necessario trasformare i dati grezzi in una forma coerente, affidabile e adatta all'analisi.\\
+Dunque, prima di procedere con l'applicazione delle tecniche di regressione o modelli di previsione delle performance, è necessario trasformare i dati grezzi in una forma coerente, affidabile e adatta all'analisi.\\
 
 Questo insieme di operazioni ha come unico scopo quello di arrivare a ottenere un dataset "pulito" che permetta di ottenere risultati attendibili e riduca al minimo i rischi di distorsioni o bias nelle previsioni.\\
-
 In particolare, in questo studio, permettono di gestire correttamente le variabili richieste nelle domande, che spesso possono avere valori mancanti o formati diversi.\\
-Per esempio, molti partecipanti non disponevano di una misurazione accurata di alcuni parametri. Di conseguenza hanno dovuto inviare risposte prive di informazioni (e.g. "Non lo so").\\
-Inoltre, migliorano la qualità delle previsioni sui tempi di gara, poichè i modelli di machine learning sono molto sensibili alla qualità del dataset di partenza.\\
+Per esempio, molti partecipanti non disponevano di una misurazione accurata di alcuni parametri. Di conseguenza, hanno dovuto inviare risposte prive di informazioni (e.g. "Non lo so").\\
+Inoltre, migliorano la qualità delle previsioni sui tempi di gara, poiché i modelli di machine learning sono molto sensibili alla qualità del dataset di partenza.\\
 
 Un ulteriore aspetto da considerare è il numero complessivamente ridotto di risposte ricevute, che ha reso ancora più delicata la fase di pulizia e preparazione dei dati.\\
 
@@ -244,6 +247,7 @@ Una volta finita la fase di raccolta dati, la tabella finale contenente le rispo
 
 Le risposte al questionario sono state inizialmente controllate visualmente su un foglio di calcolo. 
 Le tuple con valori incomprensibili, incoerenti o con un’elevata presenza di risposte “non disponibili” sono state rimosse, riducendo il numero totale di osservazioni a 150.\\
+Inoltre, per garantire l’omogeneità, i campi espressi con unità o formati differenti sono stati convertiti all’unità standard prescelta.
 
 \begin{figure}[H]
     \centering
@@ -257,7 +261,7 @@ In questa fase, i dati sono stati esportati in un file csv e caricati in uno scr
 È stata innanzitutto rimossa la colonna "Timestamp", che riportava la data e l'ora di compilazione del questionario, in quanto non rilevante ai fini dell’analisi.\\
 
 Successivamente, sono state individuate le colonne con numerosi valori nulli.\\
-In questo caso, erano due features: VO$_2$max e cadence (\textit{cadenza}).\\
+In questo caso, erano due feature: VO$_2$max e cadence (cadenza media).\\
 L'eliminazione della colonna relativa al VO$_2$max ha inciso negativamente sui risultati finali dei modelli, poiché essendo molto correlata al tempo finale, avrebbe sicuramente aiutato a ottenere previsioni più accurate.\\
 
 I valori mancanti sono stati verificati utilizzando il seguente comando:
@@ -265,10 +269,8 @@ I valori mancanti sono stati verificati utilizzando il seguente comando:
     df.isnull().values.any()
 \end{verbatim}
 Questo comando restituisce un valore booleano: \texttt{True} se nel dataset sono presenti valori mancanti (\texttt{NaN}), \texttt{False} altrimenti.\\
-In questo modo è stato possibile confermare che tutte le righe rimanenti fossero complete.\\
-
-Invece, per quanto riguarda gli outlier, sono state eliminate le tuple con tempi finali uguali o inferiori a 140 minuti.\\
-Questo ha permesso di ottenere un insieme di tempi con distribuzione normale.\\
+In questo modo è stato possibile confermare che tutte le righe rimanenti fossero complete. \\
+Invece, per quanto riguarda gli outlier, sono state eliminate le tuple con tempi finali uguali o superiori a 140 minuti.\\
 
 Al termine di questa fase, il dataset risultante contava 145 righe pronte per la successiva analisi.
 
@@ -283,7 +285,7 @@ Analogamente a quanto fatto per gli anni di allenamento, la variabile "avg\_km\_
 
 Per le variabili relative ai diversi tipi di allenamento settimanale (z2\_train\_week, fartlek\_train\_week e power\_train\_week), i valori mancanti sono stati sostituiti con 0. Successivamente, le colonne sono state convertite in valori interi.\\
 
-Inoltre, sono state aggiunte colonne aggiuntive contenenti i tempi convertiti sia in secondi che in minuti, in modo da agevolare le successive analisi e i confronti tra le diverse unità di misura.\\
+Inoltre, al fine di facilitare l'analisi statistica e il confronto tra osservazioni, i tempi originariamente nel formato HH:MM:SS sono stati convertiti in secondi e in minuti.\\
 
 \chapter{Esplorazione e visualizzazione}
 Dopo la fase di pulizia e normalizzazione del dataset, è stato necessario procedere con un’analisi esplorativa dei dati (Exploratory Data Analysis, EDA). \\
@@ -291,8 +293,8 @@ Questa fase rappresenta un passaggio fondamentale, in quanto consente di ottener
 
 Attraverso tecniche di visualizzazione e calcolo di statistiche descrittive è stato possibile esaminare la distribuzione delle variabili principali, individuare eventuali anomalie o valori estremi, nonché identificare relazioni preliminari tra i diversi fattori.\\
 
-L’analisi esplorativa non si limita a una semplice descrizione dei dati, ma fornisce spunti interpretativi utili a orientare le fasi successive del lavoro,  come la selezione delle variabili più rilevanti e la definizione di modelli predittivi. \\
-In particolare, l’attenzione è stata posta sia sulle caratteristiche demografiche e prestazionali dei partecipanti,  sia sulle possibili correlazioni tra parametri fisiologici, abitudini di allenamento e risultati ottenuti in gara. \\
+L’analisi esplorativa non si limita a una semplice descrizione dei dati, ma fornisce spunti interpretativi utili a orientare le fasi successive del lavoro,  come la selezione delle variabili più rilevanti. \\
+In particolare, l’attenzione è stata posta sia sulle caratteristiche demografiche e prestazionali dei partecipanti,  sia sulle possibili correlazioni tra abitudini di allenamento e risultati ottenuti in gara. \\
 
 Infine, attraverso un confronto tra sottogruppi di atleti (più veloci e più lenti), è stato possibile mettere in evidenza pattern distintivi e differenze significative, che offrono indicazioni preziose per comprendere i fattori che incidono maggiormente sulla performance sportiva.\\
 
@@ -302,13 +304,12 @@ In questa sezione vengono presentate le principali caratteristiche del campione 
 L'obiettivo è fornire una panoramica chiara e dettagliata dei partecipanti, in termini di età, genere e performance sportive, al fine di contestualizzare le analisi successive. \\
 
 Attraverso l'esame delle distribuzioni delle variabili e l'identificazione di eventuali pattern o valori anomali, è possibile comprendere meglio la composizione del campione e le sue implicazioni sui risultati ottenuti. 
-In particolare, verranno illustrati la distribuzione di genere, l'età media e la variabilità dei tempi di gara, fornendo così un quadro iniziale completo dei partecipanti allo studio.\\
+In particolare, verranno illustrati la distribuzione del genere, dell'età e dei tempi di gara, fornendo così un quadro iniziale completo dei partecipanti allo studio.\\
 
 \subsection{Distribuzione dell'età e genere}
 
 La distribuzione dell’età dei partecipanti è stata analizzata per valutare la composizione demografica del campione. \\
-L’età media risulta pari a 41,6 anni e una mediana di 42 anni, con un'età minima di 18 anni e una massima di 71 anni.\\
-La deviazione standard è di 14,4 anni, il che indica una certa variabilità all'interno del campione.\\
+L’età media risulta pari a 41,6 anni e una mediana di 42 anni, con un'età minima di 18 anni e una massima di 71 anni. La deviazione standard è di 14,4 anni, il che indica una certa variabilità all'interno del campione.\\
 
 
 \begin{figure}[H]
@@ -317,22 +318,23 @@ La deviazione standard è di 14,4 anni, il che indica una certa variabilità all
     \caption{Distribuzione delle età.}
 \end{figure}
 
-Per quanto riguarda il genere, il campione è composto per la maggior parte da uomini (85,5\%), mentre le donne rappresentano il 14,5\% dei partecipanti, come illustrato nel grafico seguente.\\ Questa distribuzione indica una netta predominanza maschile nel campione, elemento da considerare nelle analisi successive.\\
+Per quanto riguarda il genere, il campione è composto per la maggior parte da uomini (85,5\%), mentre le donne rappresentano il 14,5\% dei partecipanti, come illustrato nel grafico seguente (fig. 3.2).\\ 
+Questa distribuzione indica una netta predominanza maschile nel campione, elemento da considerare nelle fasi successive.\\
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{grafici/sex.png}
-    \caption{Percentuale di uomini e donne nel campione.}
+    \caption{Numero di uomini e donne nel campione.}
 \end{figure}
 
 \subsection{Distribuzione dei tempi finali di gara e passo}
 I tempi di gara dei partecipanti, espressi in secondi, mostrano una media di circa 6.030 s (1 h 40 min) e una mediana di 6.000 s, con un minimo di 3.960 s (1 h 6 min) e un massimo di 8.280 s (2 h 18 min). \\
-La deviazione standard, pari a 885 s (circa 15 min), evidenzia una variabilità significativa tra le prestazioni osservate.\\
+La deviazione standard, pari a 885 sec. (circa 15 min), evidenzia una variabilità significativa tra le prestazioni osservate.\\
 
 Analizzando il passo al chilometro, gli atleti presenti nel campione raccolto corrono mediamente la mezza a 4:46 m/km, con una mediana di 4:44 m/km. La velocità media risulta leggermente più elevata nei primi 10 km (4:42 m/km, mediana 4:38 m/km) e più contenuta nella seconda parte (4:49/km, mediana 4:50/km). \\
-Questo indica un calo di ritmo nella fase conclusiva, in linea con l’affaticamento accumulato e una partenza tendenzialmente più brillante.\\
+Questo indica un calo di ritmo nella fase conclusiva, in linea con l’affaticamento accumulato e una partenza tendenzialmente più rapida.\\
 
-Dal grafico a istogramma (Figura 3.3) si osserva che la maggior parte dei partecipanti si concentra intorno alla media, mentre valori estremi verso il minimo e il massimo risultano meno frequenti.
+Dal grafico a istogramma (fig. 3.3) si osserva che la maggior parte dei partecipanti si concentra intorno alla media, mentre valori estremi verso il minimo e il massimo risultano meno frequenti.
 
 
 \begin{figure}[H]
@@ -342,7 +344,7 @@ Dal grafico a istogramma (Figura 3.3) si osserva che la maggior parte dei partec
 \end{figure}
 
 
-Invece nel boxplot (figura 3.4), oltre a confermare quello già visto nel grafico precedente, si può notare un outlier che rappresenta una una prestazione significativamente più lenta rispetto al resto del campione.\\
+Invece nel boxplot (figura 3.4), oltre a confermare quello già visto nel grafico precedente, si può notare un outlier che rappresenta una prestazione significativamente più lenta rispetto al resto del campione.\\
 La presenza dell’outlier, pur rappresentando una prestazione atipica, è utile mantenerla poiché, nella fase di addestramento, consente ai modelli di apprendere anche scenari meno frequenti ma possibili.
 
 \begin{figure}[H]
@@ -364,36 +366,39 @@ Tale analisi fornisce una visione complessiva delle relazioni lineari, evidenzia
     \caption{Matrice di correlazione.}
 \end{figure}
 
-Successivamente, per approfondire alcuni aspetti specifici, sono state analizzate tre variabili di interesse:
+Successivamente, per approfondire alcuni aspetti specifici, sono state analizzate quattro variabili di interesse:
 \begin{itemize}
-    \item \textbf{Allenamenti in Z2}: corsa a intensità bassa–media, circa il 60–75\% della frequenza cardiaca massima, mirata a costruire base aerobica ed efficienza metabolica nel tempo.
-    \item \textbf{Allenamenti di potenza}: sedute ad alta intensità o con esercizi esplosivi/di forza per sviluppare velocità.
-    \item \textbf{Ore di sonno medie}: numero medio di ore dormite per notte, indicatore del recupero fisiologico che supporta gli adattamenti e la prestazione.
+    \item Allenamenti in Z2: corsa a intensità bassa–media, circa il 60–75\% della frequenza cardiaca massima, mirata a costruire base aerobica ed efficienza metabolica nel tempo.
+    \item Allenamenti di potenza: sedute ad alta intensità o con esercizi esplosivi/di forza per sviluppare velocità.
+    \item Ore di sonno medie: numero medio di ore dormite per notte, indicatore del recupero fisiologico che supporta gli adattamenti e la prestazione.
+    \item Battito cardiaco a riposo: valore medio della frequenza cardiaca a riposo, utile per valutare il livello di forma fisica.
 \end{itemize}
 
 Di queste sono stati tracciati degli scatterplot, in modo da visionare graficamente che tipo di correlazione avessero con il tempo finale espresso in minuti.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{grafici/lmplot_z2_timemin.png}
+    \includegraphics[width=0.6\linewidth]{grafici/lmplot_z2_timemin.png}
     \caption{Correlazione tra allenamenti in Z2 e tempo finale}
 \end{figure}
 
-Dal grafico emerge una correlazione negativa tra il numero di allenamenti in Z2 e il tempo finale: all’aumentare degli allenamenti di corsa in zona 2, i tempi di gara tendono a ridursi, indicando un’associazione con prestazioni migliori.\\
-Si nota una dispersione elevata, ma l'intervallo di confidenza si restringe, suggerendo un trend plausibile.
+Dal grafico (fig. 3.6) emerge una correlazione negativa tra il numero di allenamenti in Z2 a circa quattro settimane dalla gara e il tempo finale: all’aumentare degli allenamenti di corsa in zona 2, i tempi di gara tendono a ridursi, indicando un’associazione con prestazioni migliori.\\
+Nonostante la dispersione dei punti sia elevata, la pendenza della retta di regressione è coerente con questa tendenza e la banda di confidenza, più stretta in prossimità del centro dei dati, indica una stima dell’effetto ragionevolmente stabile nell’intorno della media.
 
 \clearpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{grafici/lmplot_power_timemin.png}
+    \includegraphics[width=0.6\linewidth]{grafici/lmplot_power_timemin.png}
     \caption{Correlazione tra allenamenti di potenza e tempo finale}
 \end{figure}
 
-La relazione appare debolmente positiva, quindi più allenamenti settimanali dedicati alla potenza sono associati a tempi più alti.\\
+La relazione nel grafico (fig. 3.7) appare debolmente positiva, quindi più allenamenti settimanali dedicati alla potenza sono associati a tempi più alti.\\
 Questo può essere dovuto al fatto che gli allenamenti di potenza sono in genere svolti per aumentare le capacità di sostenere ritmi elevati su tratti brevi. \\
-Di conseguenza, preferire questa tipologia di allenamento, a discapito di altre, porta ad una peggiore performance sulla mezza maratona.\\
-Tuttavia, il grafico è molto dispersivo e presenta una banda di confidenza molto ampia, perciò l’effetto stimato è incerto e può risentire di pochi casi agli estremi.
+Di conseguenza, preferire questa tipologia di allenamento a circa quattro settimane dalla gara, a discapito di altre, porta ad una peggiore performance sulla mezza maratona.\\
+Tuttavia, il grafico è molto dispersivo e presenta una banda di confidenza molto ampia, perciò l’effetto stimato è incerto e può risentire di pochi casi agli estremi.\\
+
+É stata fatta un'ulteriore analisi su come questa tipologia di allenamenti possa influire sulla prima metà di gara, ma in questo caso è stata rilevata una relazione abbastanza piatta.
 
 \clearpage
 
@@ -403,73 +408,89 @@ Tuttavia, il grafico è molto dispersivo e presenta una banda di confidenza molt
     \caption{Correlazione tra ore di sonno medie e tempo finale}
 \end{figure}
 
-Nel grafico precedente si può notare come la pendenza sia quasi nulla.
-Di conseguenza, l’aumento delle ore medie di sonno non si associa a un miglioramento sistematico dei tempi di gara nel campione considerato.\\
-La nuvola dei punti rimane ampia lungo tutto l’asse e la banda di confidenza non è stretta, segnalando che l’effetto medio stimato è debole.
+Nel grafico (fig. 3.8) si può notare come la pendenza sia quasi nulla.
+L’aumento delle ore medie di sonno non si associa a un miglioramento sistematico dei tempi di gara nel campione considerato.\\
+La nuvola di punti è ampiamente dispersa e la banda di confidenza risulta relativamente larga lungo l’intero dominio: ciò suggerisce che l’effetto medio stimato sia debole e, verosimilmente, non statisticamente significativo.\\
+Da un punto di vista interpretativo, è plausibile che la performance sia dominata da altri fattori, i cui effetti possono oscurare eventuali associazioni deboli con il sonno. Inoltre, la metrica impiegata coglie la quantità media di sonno ma non la sua qualità o la variabilità intra-settimanale, dimensioni potenzialmente rilevanti.
+
+\clearpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/lmplot_bm_timemin.png}
+    \caption{Correlazione tra battito cardiaco a riposo e tempo finale}
+\end{figure}
+
+
+Il grafico (fig. 3.9) mostra una relazione positiva tra battito cardiaco medio a riposo e tempo finale nella mezza maratona.\\
+Questo significa che una maggiore efficienza cardiovascolare corrisponde mediamente a prestazioni migliori.
 
 \section{Analisi comparative tra quartili}
 Infine, è stata effettuata un'analisi basata sui quartili del tempo finale, suddividendo l'intero dataset in due gruppi: 
 il primo quartile (Q1), che rappresenta il 25\% dei partecipanti con i tempi più rapidi, e l'ultimo quartile (Q4), che comprende il 25\% dei partecipanti con i tempi più lenti. \\
-
 Questa suddivisione consente di confrontare in modo diretto le caratteristiche dei partecipanti agli estremi della distribuzione dei tempi di gara.\\
-\clearpage
-Come primo passaggio, sono stati calcolati i valori medi dei tempi finali e dei chilometri settimanali dei due quartili per evidenziare le principali differenze.\\ 
+
+Come primo passaggio, sono stati calcolati i valori medi delle principali feature dei due quartili per evidenziare le principali differenze.\\ 
 I risultati sono i seguenti:
 \begin{itemize}
-    \item Q1 presenta un tempo medio di gara pari a circa 82,2 minuti e una media di chilometri settimanali di circa 59,3 km.
-    \item Q4 presenta un tempo medio di gara pari a circa 119,9 minuti e una media di chilometri settimanali di circa 31,5 km.
+    \item Q1 presenta un'età media di 38 anni, una media di 6.8 anni di allenamento, un tempo medio di gara pari a circa 82,2 minuti e un chilometraggio settimanale di circa 59,3 km.
+    \item  Q4 presenta un'età media di 43 anni, una media di circa 5.4 anni di allenamento, un tempo medio di gara pari a circa 119,9 minuti e una media di chilometri settimanali di circa 31,5 km.
 \end{itemize}
 
-Tra i due quartili si osserva una differenza significativa sia nei tempi di gara, sia nel volume di allenamento settimanale.\\
+Tra i due quartili si osserva che gli atleti presenti in Q1 sono più giovani di quelli in Q4 e si allenano in media da circa un anno in più, ma soprattutto si nota una differenza significativa sia nei tempi di gara, sia nel volume di allenamento settimanale.\\
 Queste evidenze hanno portato a concentrare l’attenzione sulle diverse modalità di allenamento seguite dai due gruppi di atleti.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{grafici/count_all_quartili.png}
     \caption{Numero di allenamenti settimanali nei due gruppi estremi (Q1 e Q4).}
 \end{figure}
-Si nota come gli atleti più veloci (Q1) tendano ad allenarsi con maggiore frequenza settimanale e con una gamma di variabilità più ampia rispetto a quelli più lenti (Q4), che hanno un volume di sedute decisamente tipico del gruppo.
+Si nota come gli atleti più veloci (Q1) tendano ad allenarsi con maggiore frequenza settimanale e con una gamma di variabilità più ampia in fase di preparazione alla gara rispetto a quelli più lenti (Q4), che hanno un volume di sedute decisamente più ridotto.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{grafici/boxplot_all_sett_quartili.png}
-    \caption{Distribuzione degli allenamenti settimanali in zona 2 (Z2) nei due quartili estremi (Q1 e Q4).}
+    \caption{Boxplot degli allenamenti settimanali in zona 2 (Z2) nei due quartili estremi (Q1 e Q4).}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{grafici/boxplot_all_sett_power_quartili.png}
-    \caption{Distribuzione degli allenamenti settimanali di potenza nei due quartili estremi (Q1 e Q4).}
+    \caption{Boxplot degli allenamenti settimanali di potenza nei due quartili estremi (Q1 e Q4).}
 \end{figure}
 
 Dall’analisi delle diverse tipologie di allenamento emergono dinamiche opposte rispetto al volume complessivo. \\
 
-Per quanto riguarda le sedute in zona 2, i due gruppi mostrano valori medi simili, sebbene gli atleti più veloci (Q1) presentino una variabilità maggiore, segno di approcci più diversificati. \\
-Al contrario, negli allenamenti di potenza si osserva un quadro differente: gli atleti del Q1 svolgono un numero contenuto e piuttosto uniforme di sedute, mentre nel Q4 compare una distribuzione più eterogenea e talvolta più frequente.\\
+Per quanto riguarda le sedute in zona 2, i due gruppi mostrano valori mediani vicini, sebbene gli atleti più veloci (Q1) presentino una variabilità maggiore, segno di approcci più diversificati. \\
+Al contrario, negli allenamenti di potenza si osserva un quadro differente: gli atleti del Q1 svolgono un numero molto contenuto e piuttosto uniforme di sedute, mentre nel Q4 compare una distribuzione più eterogenea e talvolta più frequente.\\
 
-Questo suggerisce che i corridori più performanti tendono a privilegiare una pianificazione mirata e stabile, mentre i meno performanti adottano strategie meno definite e più variabili.
+
+Questo suggerisce che i corridori più performanti a circa quattro settimane dalla gara tendono a privilegiare una pianificazione mirata e stabile, tipica di un approccio agonistico, mentre i meno performanti adottano strategie meno definite e più variabili, compatibili con una pratica più orientata verso lo svago. 
+
 
 
 
 \chapter{Previsione e risultati}
 Dopo la fase di esplorazione e preparazione dei dati, l’analisi si concentra ora sulla costruzione di modelli predittivi.\\
-L’obiettivo principale è stimare il tempo finale della mezza maratona a partire dalle caratteristiche fisiologiche e allenanti degli atleti, valutando quali tecniche di regressione siano più efficaci.\\
+L’obiettivo principale è stimare il tempo finale della mezza maratona a partire dalle caratteristiche fisiologiche e di allenamento degli atleti, valutando quali tecniche di regressione siano più efficaci.\\
 
-In questo capitolo vengono dapprima descritti i modelli scelti, con particolare attenzione alle regressioni lineari penalizzate (Ridge, Lasso, Elastic Net), e successivamente presentati i risultati ottenuti in termini di accuratezza e capacità di generalizzazione. \\
-Infine, i modelli sono messi a confronto tramite le principali metriche di valutazione, così da individuare quello più adatto allo scopo della ricerca.
+In questo capitolo vengono dapprima descritti i modelli scelti, con particolare attenzione alle tecniche di regolarizzazione (Ridge, Lasso, Elastic Net), e successivamente presentati e confrontati i risultati ottenuti in termini di accuratezza tramite tre metriche principali: MAE, RMSE, R$^2$. \\
 
 Per permettere una adeguata valutazione della capacità predittiva dei modelli, il dataset è stato suddiviso in training set e test set con rapporto 80/20, impostando un seed in modo da garantire una riproducibilità coerente.\\
-I modelli sono stati addestrati esclusivamente sui dati di training; tutte le trasformazioni sono state fittate sul training e poi applicate al test per evitare data leakage.\\
+I modelli sono stati addestrati esclusivamente sui dati di training; tutte le ottimizzazioni tramite hyperparameter tuning sono state fittate sul training e poi applicate al test.\\
 
-Non è stato creato un validation set distinto perchè la numerosità dei dati è limitata e l'introduzione di una terza porzione avrebbe ridotto notevolmente gli esempi disponibili per l'addestramento, peggiorando la stima dei parametri.\\
+Non è stato creato un validation set distinto perché la numerosità dei dati è limitata e l'introduzione di una terza porzione avrebbe ridotto notevolmente gli esempi disponibili per l'addestramento, peggiorando la stima dei parametri.\\
+
+Le colonne utilizzate inizialmente sono state: age, sex, weight, height, avg\_km\_week, train\_years, z2\_train\_week, fartlek\_train\_week, power\_train\_week, min\_heart\_rate.\\
+Non è stata inclusa la variabile train\_week poiché rappresenta semplicemente la somma delle diverse tipologie di allenamento settimanale (z2\_train\_week, fartlek\_ train\_week, power\_train\_week); trattandosi quindi di una combinazione lineare delle altre, la sua presenza potrebbe introdurre multicollinearità.\\
+Inoltre, per scongiurare problemi di data leakage, la colonna relativa allo split dei 10km in gara non è stata considerata, poiché rappresenta un parziale della stessa gara e, di conseguenza, è altamente informativa del tempo finale.
 
 \section{Scelta dei modelli}
 Per affrontare il problema della previsione dei tempi di gara, sono stati presi in considerazione diversi modelli di regressione, appartenenti sia alla famiglia lineare sia a quella non lineare.\\
-L’obiettivo è stato confrontare approcci semplici e interpretabili con metodi più complessi e flessibili, così da valutare il compromesso tra accuratezza e leggibilità dei risultati.\\
 
 Nello specifico, sono stati implementati i seguenti modelli.
 
 \paragraph{Regressione lineare multipla} 
 La regressione lineare multipla estende la regressione lineare semplice includendo
 più variabili esplicative. Parliamo comunque di modello “lineare” perché si ipotizza
-che la variabile risposta sia collegata a una \emph{combinazione lineare} delle variabili
+che la variabile risposta sia collegata a una combinazione lineare delle variabili
 esplicative.
 
 Il modello si scrive come:
@@ -494,7 +515,7 @@ $$
 f(x)= \langle w,x \rangle + b
 $$
 Per gestire relazioni non-lineari, SVR utilizza delle funzioni kernel che mappano implicitamente i dati originali di input in spazi con molte più dimensioni, dove le relazioni tra i dati possono diventare quasi lineari e quindi più facili da modellare.\\
-I kernel che sono stati utilizzati in questo lavoro sono stati il radial basis function (RBF) e il polinomiale (poly) per l'hyperparameter tuning.
+I kernel che sono stati utilizzati in questo lavoro sono stati il radial basis function (RBF) e il polinomiale (poly). \cite{SVR1}
 
 
 
@@ -504,8 +525,7 @@ Il funzionamento si basa sulla creazione di alberi decisionali, ognuno dei quali
 Il processo inizia con una selezione casuale di righe dal dataset, reinserendo ogni volta i campioni estratti, per formare diversi set di dati di addestramento per ogni albero.\\
 Successivamente, si esegue il \textit{feature sampling} dove solo un sottoinsieme di features viene utilizzato per costruire un albero, garantendo la diversità dei modelli.\\
 Dopo che gli alberi sono stati addestrati, ognuno di questi effettua una previsione sulla variabile continua target e la previsione finale è data dalla media dei risultati dei singoli alberi.\\
-Questo approccio è vantaggioso perché i singoli alberi decisionali, essendo addestrati solo con un sottoinsieme di dati, sono soggetti a overfitting, specialmente con dati complessi.\\
-Quindi, col calcolo della media, si riesce a ridurre al minimo la varianza, portando a previsioni più precise e migliorando la generalizzazione del modello.
+Questo approccio è vantaggioso perché i singoli alberi decisionali presentano spesso alta varianza e sono inclini all’overfitting, soprattutto con dati complessi. Mediando le predizioni di molti alberi, l’algoritmo Random Forest riduce la varianza, ottenendo stime più accurate e stabili e migliorando la capacità di generalizzazione del modello. \cite{RF1}
 
 
 
@@ -515,44 +535,181 @@ Questo modello si basa sul Gradient Boosting, una tecnica di machine learning ba
 Per la regressione, la previsione finale viene ottenuta sommando i risultati di tutti gli alberi costruiti.\\
 Il meccanismo che porta al risultato inizia prevedendo la media della variabile target. Poi, per un numero prestabilito di iterazioni, si calcolano i residui (errori), si addestra un albero decisionale per prevederli e si aggiungono le previsioni del nuovo albero al totale parziale.\\
 Questo processo genera un tasso di apprendimento che viene trasmesso da albero a albero e che, infine, consente di ottenere una previsione finale accurata, combinando i contributi di tutti gli alberi, pesati dal tasso di apprendimento.
-Inoltre, è stato utilizzato \textbf{XGBoost}, una versione avanzata del Gradient Boosting, che offre miglioramenti in termini di velocità e prestazioni grazie a tecniche di ottimizzazione avanzate e alla regolarizzazione.
+Inoltre, è stato utilizzato \textbf{XGBoost}, una versione avanzata del Gradient Boosting, che offre miglioramenti in termini di velocità e prestazioni grazie a tecniche di ottimizzazione avanzate e alla regolarizzazione. \cite{XGB1}
 
 
-\paragraph{Gaussian Process Regressor}
-
-
-
-\subsection{Modelli con penalizzazione}
-I modelli lineari con penalizzazione (Ridge, Lasso, Elastic Net) aggiungono un termine di regolarizzazione alla funzione obiettivo per controllare la complessità del modello e migliorare la capacità di generalizzazione.\\
-L’idea è introdurre un compromesso bias–variance: si accetta un leggero aumento del bias in cambio di una riduzione della varianza delle stime, rendendo il modello più stabile su nuovi dati e prevenendo l'overfitting.
+\subsection{Tecniche di regolarizzazione}
+Durante una prima fase di test, è stato riscontrato un underfitting dei modelli. \\
+Per problemi di questo tipo, sono tre le possibili soluzioni: ottenere più dati di training, aggiungere nuove feature al dataset oppure diminuire la regolarizzazione in modo da migliorare il compromesso bias-variance.\\
+Queste tecniche (Ridge, Lasso, Elastic Net) aggiungono un termine di regolarizzazione alla funzione obiettivo per controllare la complessità del modello e migliorare la capacità di generalizzazione.\\
+Tuttavia, un'eccessiva penalizzazione aumenta il bias, rendendo il modello troppo rigido per cogliere la struttura dominante dei dati.\\
+Riducendo, invece, la regolarizzazione (diminuendo $\alpha$ oppure regolando il mix L1/L2 in ElasticNet) si ottiene più flessibilità da parte del modello, migliorando l'aderenza ai dati.\cite{IBM1}\\
+Inoltre, per questo tipo di modelli è opportuno applicare una standardizzazione delle feature all’interno di una Pipeline, stimata solo sul training per evitare leakage.\\
+In questo modo la penalizzazione L1/L2 non dipende dalle unità di misura, la selezione dei coefficienti risulta equa e stabile tra predittori.\\
+In questo studio, è stato applicato StandardScaler(), che centra e scala le feature in modo che ciascuna abbia media 0 e varianza 1.
 
 \paragraph{Lasso}
 Least Absolute Shrinkage and Selection Operator (L1) è una tecnica di regressione che viene utilizzata per la regolarizzazione e la selezione delle variabili. \\
 Identifica chiaramente le feature con scarsa correlazione rispetto alla variabile target, riducendo i coefficienti a zero e migliorando la generalizzazione del modello.\\
 
 \paragraph{Ridge}
-La Ridge Regression è una tecnica di regolarizzazione che mitiga overfitting e multicollinearità riducendo e stabilizzando i coefficienti.\\
-A differenza del metodo Lasso, i coefficienti non vengono completamente azzerati, bensì vengono ridotti (operazione di \textit{shrinkage}).\\
-Nei casi di multicollinearità, la penalizzazione stabilizza le stime e distribuisce il peso tra i predittori correlati.\\
+La tecnica Ridge (L2), a differenza del metodo Lasso, applica una penalità $\alpha$ sui coefficienti (operazione detta "\textit{shrinkage}"). Sebbene la penalizzazione L2 aumenti il bias, con $\alpha$ piccolo Ridge si comporta quasi come la regressione lineare ma stabilizza le stime in presenza di multicollinearità e campioni di piccola dimensione.\\
+Questa lieve contrazione evita coefficienti estremi, riduce la varianza e può diminuire l’errore di generalizzazione.
+
 
 \paragraph{ElasticNet}
 Questa tecnica di regolarizzazione combina le penalità L1 (Lasso) e L2 (Ridge). 
 Attraverso questa combinazione, il modello riesce a bilanciare efficacemente il compromesso tra selezione delle variabili e contrazione dei coefficienti.\\
 
 \section{Risultati e metriche delle regressioni}
+In questa sezione vengono presentati i risultati di due modelli che hanno ottenuto alcune delle migliori prestazioni e una valutazione aggiuntiva di un SVR con kernel polinomiale.\\
+Le prestazioni sono valutate utilizzando come misure di errore RMSE (Root Mean Squared Error) e MAE (Mean Absolute Error).\\
+
+Il modello che ha performato meglio, nel complesso, è stato ElasticNet, ottimizzato tramite hyperparameter tuning con cross-validation sui parametri $\alpha$ e L1\_ratio.
+\begin{itemize}
+    \item Best alpha: 0.06866
+    \item Best L1 ratio: 0.1
+    \item RMSE : 8.22 min
+    \item MAE  : 6.21 min
+    \item R²   : 0.6582
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{enet_residuals.png}
+    \caption{Residui del modello ElasticNet sul test set.}
+\end{figure}
+
+
+
+Escludendo i modelli con regolarizzazione, la Regressione Lineare risulta essere tra i più efficaci, con prestazioni simili a quelle dei modelli regolarizzati.\\
+Questi sono i risultati delle principali metriche:
+\begin{itemize}
+    \item RMSE : 8.57
+    \item MAE : 6.65
+    \item R$^2$ : 0.6291
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/linear_regression_residui.png}
+    \caption{Residui della Regressione Lineare sul test set.}
+\end{figure}
+
+I due grafici dei residui precedenti (fig. 4.1, fig.4.2) sono molto simili. Questo è dovuto al fatto che il parametro di regolarizzazione ottimale $\alpha$ è molto basso.\\
+Di conseguenza, la penalizzazione risulta debole e produce stime quasi coincidenti con la Linear Regression.\\
+
+É presente un’osservazione anomala con un residuo molto elevato; questo spiega perché RMSE risulta maggiore di MAE, dato che il RMSE penalizza quadraticamente gli errori più grandi.\\
+
+In aggiunta, è stata effettuata un'ulteriore analisi su questo modello, provando a rimuovere una colonna con un indice di correlazione basso (fig. 3.5) rispetto al tempo finale.\\
+In questo caso, è stata rimossa la variabile \textit{weight} dal training set iniziale e questi sono i risultati delle metriche:
+\begin{itemize}
+    \item RMSE : 8.31
+    \item MAE  : 6.43
+    \item R²   : 0.6507 
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/lr_residui_post_weight.png}
+    \caption{Residui della Regressione Lineare sul test set dopo la rimozione della colonna "weight"}
+    \label{fig:placeholder}
+\end{figure}
+
+Si può notare un miglioramento delle prestazioni sul test set, suggerendo quindi che la colonna weight introducesse rumore più che segnale.\\
+Tuttavia, nel grafico dei residui (fig. 4.3), si osserva un maggiore grado di dispersione dei punti rispetto al grafico precedente (fig. 4.2).\\
+Per le successive analisi, la variabile weight è stata reinserita nel training set.\\
+
+Infine, è stato testato un modello SVR con kernel poly tramite hyperparameter tuning. Per ogni grado polinomiale, sono stati esplorati i migliori iperparametri di SVR ($C, \epsilon, \gamma$) .\\
+Per ciascun grado polinomiale (da 1 a 5) è stata analizzata la variazione del MAE.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/hyperparameter_tuning_mae.png}
+    \caption{Andamento del MAE per i diversi gradi $d$}
+    \label{fig:placeholder}
+\end{figure}
+
+Il profilo del MAE in funzione del grado mostra un minimo per $d=1$, mentre per gradi maggiori il MAE peggiora sensibilmente.\\
+Poiché $d=1$ coincide di fatto con un modello lineare, il risultato indica che l'aumento di complessità polinomiale non porta beneficio ma, anzi, riduce la capacità di generalizzazione del modello.\\
+
+Questo esito resta coerente con i risultati dei modelli lineari precedenti (Linear Regression e ElasticNet), suggerendo che la relazione tra feature nel training set e variabile target sia approssimativamente lineare nel campione considerato.
 
 
 \section{Confronto tra modelli}
+Di seguito viene presentato il confronto tra i modelli addestrati, con lo scopo di avere una panoramica generale delle loro prestazioni.\\
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/standardized_mae_models.png}
+    \caption{Confronto valori MAE dei diversi modelli}
+    \label{fig:placeholder}
+\end{figure}
 
+Dal grafico del MAE (fig. 4.5) emerge che i modelli lineari che adottano tecniche di regolarizzazione ottengono gli errori più bassi (6.21 minuti), seguiti da Linear Regression e SVR con kernel RBF, che si mantengono su valori simili.\\
+I modelli basati su ensemble (combinazione di alberi decisionali), come XGBoost, Random Forest e Gradient Boosting, mostrano invece valori progressivamente più elevati, indicando quindi una minore accuratezza nelle previsioni sul test set.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/standardized_rmse_models.png}
+    \caption{Confronto valori RMSE dei diversi modelli}
+    \label{fig:placeholder}
+\end{figure}
+
+Il grafico del RMSE (fig 4.6) conferma la tendenza vista nel grafico precedente (fig. 4.5).\\
+I modelli lineari presentano degli errori quadratici più contenuti, mentre i restanti ed in particolare Gradient Boosting mostrano valori superiori, che indicano quindi una maggiore dispersione degli errori.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{grafici/standardized_r2_models.png}
+    \caption{Confronto valori R$^2$ dei diversi modelli}
+    \label{fig:placeholder}
+\end{figure}
+
+Infine, anche il grafico dell'indice R$^2$ (fig. 4.7) rispecchia l'andamento già riscontrato nei due precedenti grafici (fig. 4.5, fig. 4.6).\\
+I migliori modelli lineari regolarizzati spiegano circa il 66\% della varianza della variabile target; segue poi la regressione lineare con il 63\%, contro valori compresi tra 0.49 e 0.42 per i modelli non lineari. È importante ricordare, tuttavia, che l'R$^2$ rappresenta solo una misura del grado di adattamento lineare e non un indicatore assoluto dell'accuratezza del modello. (Palomba, 2013) \cite{R2} \\
+
+Si può quindi affermare che i modelli lineari mostrano errori inferiori nelle previsioni rispetto ai modelli non lineari con il dataset di partenza.\\
+
+\paragraph{Intervalli di confidenza}
+Per validare i risultati, sono stati stimati gli intervalli di confidenza al 95\% della media delle metriche (MAE, RMSE, R$^2$) per Regressione Lineare e ElasticNet con $\alpha$ e L1\_ratio fissati ai valori ottimali trovati precedentemente. \\
+Il dataset è stato suddiviso in 60 partizioni train/test, generate con seed casuali diversi e sempre in proporzione 80/20; per ciascuna partizione, i modelli sono stati addestrati e testati. \\
+Questi sono i risultati:\\
+
+Linear Regression :\\
+R² medio: 0.4809 $\pm$ 0.1326 (dev. standard) \\
+IC95\%: (0.44664478664234486, 0.5151527592177493)\\
+MAE medio: 7.8707 $\pm$ 1.1504 (dev. standard)\\
+IC95\% : (7.573480133469035, 8.167832718782044)\\
+RMSE medio: 10.2543 $\pm$ 1.3740 (dev. standard)\\
+IC95\% : (9.899316473301967, 10.609203090949864) \\
+
+ElasticNet (tuned) :\\
+R² medio: 0.4931 $\pm$ 0.1213 (dev. standard)\\
+IC95\%: (0.4617260567328333, 0.5243888771688366)\\
+MAE medio: 7.7744 $\pm$ 1.1497 (dev. standard)\\
+IC95\%: (7.477443689314837, 8.071433252882938)\\
+RMSE medio: 10.1574 $\pm$ 1.3784 (dev. standard)\\
+IC95\%: (9.801313707576966, 10.513449416321873)\\
+
+È normale che i valori riportati in precedenza a questo paragrafo non rientrino negli intervalli, sono infatti stime ottenute su un singolo split del dataset con seed fissato.
+Gli intervalli di confidenza qui presentati, invece, sono calcolati aggregando i risultati su molteplici split indipendenti.\\
+In questo modo, la stima risulta più robusta e realistica, perché meno sensibile ad un singolo split ottimizzato e più rappresentativa del comportamento del modello al variare della suddivisione dei dati.
 
 \clearpage
 % --- CONCLUSIONI ---
 \chapter*{Conclusioni}
 \addcontentsline{toc}{chapter}{Conclusioni}
+Questa tesi si poneva l'obiettivo di analizzare e fare previsioni sui tempi in mezza maratona basandosi su dati raccolti tramite un questionario.\\
+La fase di esplorazione e visualizzazione ha evidenziato che la variabile relativa al numero di allenamenti settimanali in Z2 nelle quattro settimane precedenti alla gara, oltre naturalmente al numero totale di sedute nello stesso periodo, è quella maggiormente incisiva sul tempo finale.\\
+Quest'analisi è stata molto utile anche per capire come i runner più veloci e più lenti gestiscano in modo diverso il carico settimanale nella fase di preparazione, preferendo, nel caso dei primi, allenamenti di corsa normale ad allenamenti di potenza.\\
+Per quanto riguarda la fase di previsione, la scarsità di osservazioni presenti nel campione ha sicuramente influito negativamente sui risultati. I modelli non-lineari hanno accusato ancora di più questo problema a causa del funzionamento dei loro algoritmi sottostanti, i quali prevedono l'estrazione di sottoinsiemi di dati e caratteristiche dal dataset di partenza.\\
+In ottica di sviluppi futuri, l'aggiunta di colonne relative alla fase di tapering, quella più prossima alla gara, può essere utile per analizzare e aggiungere informazioni sulla condizione di forma più vicina alla gara.\\
+Come anche l'ottenimento di stime realistiche del VO$_2$max potrebbe contribuire a migliorare significativamente la capacità predittiva dei modelli, in quanto rappresenta un indicatore diretto dell'efficienza aerobica di un atleta.\\
+Infine, sicuramente l'ampliamento del campione e l'inclusione di nuove feature, oltre a quelle discusse precedentemente, possono favorire una migliore accuratezza nei risultati.\\
 
 
-Queste sono le conclusioni. Riferimento alla bibliografia \cite{K3,K4}.
+
 \clearpage
 
 % --- APPENDICI ---
@@ -573,46 +730,24 @@ Queste sono le conclusioni. Riferimento alla bibliografia \cite{K3,K4}.
 
 \bibitem{K4} Tranmer, Mark, and Mark Elliot. "Multiple linear regression." The Cathie Marsh Centre for Census and Survey Research (CCSR) 5.5 (2008): 1-5.
 
+\bibitem{SVR1} ScienceDirect. (n.d.). \textit{Support Vector Regression}. In \textit{Computer Science Topics}. Retrieved October 2, 2025 \url{https://www.sciencedirect.com/topics/computer-science/support-vector-regression}
+
+\bibitem{RF1} GeeksforGeeks. "Random Forest Regression in Python." GeeksforGeeks. Consultato il 7 ottobre 2025. \url{https://www.geeksforgeeks.org/machine-learning/random-forest-regression-in-python/}
+
+\bibitem{XGB1} Baladram, S. (2024, November 14). Gradient Boosting Regressor, Explained: A Visual Guide with Code Examples. TDS Archive (Medium). 
+
+\bibitem{IBM1} “IBM, Cos’è l’underfitting?, IBM Think, consultato il 9 ottobre 2025. \url{https://www.ibm.com/it-it/think/topics/underfitting}
+
+\bibitem{R2} G. Palomba, L’R$^2$? No, grazie!, Università Politecnica delle Marche, DISES, 2013. \url{https://utenti.dises.univpm.it/palomba/Mat/Rsquared.pdf}
+
 
 \end{thebibliography}
 
 % --- RINGRAZIAMENTI (facoltativi) ---
 \chapter*{Ringraziamenti}
+
+
 \thispagestyle{empty}
 
-Ed eccoci qui, alla fine di questa bellissima e intrepida corsa.
-Come un corridore che si appresta a superare il traguardo, mi tornano in mente tutte le persone incontrate lungo il percorso, chi solo per pochi metri, chi invece per tutta la gara.
 
-Un grazie, innanzitutto, a Luca per essere sempre stato disponibile a darmi una mano e per avermi spinto costantemente a superare i miei limiti in ogni allenamento e in ogni gara.
-
-Ai miei colleghi, vecchi e nuovi. Da ognuno di voi ho imparato qualcosa
-
-In questo percorso però non sono mai stato da solo (letteralmente). C’è stata una persona, o meglio un fratello, con cui ho avuto la fortuna di condividere tutto, dalla stanza, alla scrivania in ufficio, ai banchi di università.
-Grazie ad Antonio, per essere sempre stato di supporto, per avermi sempre fatto tenere il passo. Grazie per tutte le volte che mi hai chiesto: “Ma se io ti dicessi…”, che mi facevano dubitare su qualsiasi cosa.
-Questa volta però, ho io la domanda per te. Ma se ti avessi detto che dal primo superiore, da completi sconosciuti, ci saremmo ritrovati qui, ci avresti mai creduto?
-
-Una volta varcata la linea che sancisce la fine, ecco che invece ritrovo le persone che durante tutto il percorso non hanno mai smesso di credere in me, che anche se distanti erano lì con un pensiero, con una parola o con una telefonata. Pronti ad aspettarmi al traguardo.
-
-Grazie a tutta la mia famiglia, zii e cugini, abruzzesi e veneti.
-
-A Giulio, per il continuo sostegno sportivo e personale durante questi anni.
-
-A tutti i miei amici e amiche di Vasto, che nonostante la distanza di questi anni, ogni volta che riscendevo sembrava che non me ne fossi andato nemmeno per un giorno. 
-
-Ad Angelo, che nonostante non ci sentiamo spesso, quando ci risentiamo…. . 
-
-A Giacomo, ormai amici da più di vent'anni. 
-
-A Giuseppe, compagno di concerti.
-
-A Lorenzo, che con la sua lucida sincerità, è sempre stato pronto a darmi i giusti consigli nei giusti momenti.
-
-A Marcello, per avermi insegnato e dimostrato che se la vita ti pone davanti a una maratona, con  determinazione e volontà, si può chiudere lo stesso anche se ti eri preparato per farne solo metà.
-
-Ad Alessia per essere sempre stata la parte irrazionale, per avermi insegnato ad esprimere 
-
-Ai miei genitori per il continuo supporto e sopporto. Non sono mai stato bravo ad esprimermi, forse non lo sarò mai, ma ho sempre riconosciuto gli sforzi e i sacrifici fatti
-
-
-Grazie ancora a tutti. Alla prossima gara!
 \end{document}
